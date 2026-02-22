@@ -294,6 +294,211 @@ select option{background:var(--surface2)}
 .bar:hover::after{content:attr(title);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--surface3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:11px;white-space:nowrap;color:var(--text);pointer-events:none}
 .chart-labels{display:flex;justify-content:space-between;margin-top:4px}
 .chart-labels span{font-size:10px;color:var(--muted2);flex:1;text-align:center}
+
+/* ── ENHANCED HOVER TRANSITIONS ── */
+/* Nav items */
+.nav-item{
+  position:relative;overflow:hidden;
+}
+.nav-item::after{
+  content:'';position:absolute;left:0;top:0;height:100%;width:3px;
+  background:var(--accent);border-radius:0 3px 3px 0;
+  transform:scaleY(0);transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+}
+.nav-item:hover::after,.nav-item.active::after{transform:scaleY(1)}
+.nav-item .nav-icon{transition:transform 0.2s ease}
+.nav-item:hover .nav-icon{transform:scale(1.2)}
+
+/* Buttons ripple + lift */
+.btn{position:relative;overflow:hidden}
+.btn::before{
+  content:'';position:absolute;inset:0;background:rgba(255,255,255,0.06);
+  transform:scaleX(0);transform-origin:left;transition:transform 0.3s ease;
+}
+.btn:hover::before{transform:scaleX(1)}
+.btn-primary::before{background:rgba(255,255,255,0.1)}
+
+/* Stat cards */
+.stat{
+  position:relative;overflow:hidden;cursor:default;
+}
+.stat::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(79,255,176,0.03),transparent);
+  opacity:0;transition:opacity 0.3s;
+}
+.stat:hover::before{opacity:1}
+.stat:hover{border-color:var(--accent)!important;box-shadow:0 0 0 1px rgba(79,255,176,0.15)}
+
+/* Group cards */
+.group-card{
+  position:relative;overflow:hidden;
+}
+.group-card::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(79,255,176,0.06) 0%,transparent 60%);
+  opacity:0;transition:opacity 0.3s;pointer-events:none;
+}
+.group-card:hover::after{opacity:1}
+
+/* Expense items */
+.exp-item{
+  position:relative;
+}
+.exp-item::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,var(--accent),var(--purple));
+  transform:scaleY(0);transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  border-radius:0 2px 2px 0;
+}
+.exp-item:hover::before{transform:scaleY(1)}
+.exp-item:hover .exp-ico{transform:scale(1.1) rotate(-5deg)}
+.exp-ico{transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1)}
+
+/* Balance items */
+.bal-item{transition:border-color 0.2s,transform 0.2s,box-shadow 0.2s}
+.bal-item:hover{border-color:var(--accent);transform:translateX(4px);box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+.bal-avatar{transition:transform 0.2s ease}
+.bal-item:hover .bal-avatar{transform:scale(1.1)}
+
+/* Settle button pulse */
+.settle-btn{position:relative;overflow:hidden}
+.settle-btn::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(79,255,176,0.15),transparent);
+  transform:translateX(-100%);transition:transform 0.6s ease;
+}
+.settle-btn:hover::after{transform:translateX(100%)}
+
+/* Icon buttons */
+.icon-btn{transform:scale(1);transition:transform 0.15s cubic-bezier(0.34,1.56,0.64,1),background 0.15s,color 0.15s}
+.icon-btn:hover{transform:scale(1.2)}
+
+/* Sidebar group items in the detail page */
+.exp-item:hover{border-color:rgba(79,255,176,0.3)}
+
+/* Topbar user pill */
+.user-pill{transition:all 0.2s}
+.user-pill:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.3)}
+
+/* ── GROUP DETAIL PAGE ── */
+#page-group-detail{display:none;animation:slideUp 0.3s ease}
+#page-group-detail.active{display:block}
+
+.grp-detail-hero{
+  position:relative;border-radius:20px;padding:32px;margin-bottom:20px;overflow:hidden;
+  background:var(--surface);border:1px solid var(--border);
+}
+.grp-detail-hero::before{
+  content:'';position:absolute;inset:0;opacity:0.06;
+  background:radial-gradient(ellipse 70% 80% at 10% 50%,var(--hero-color,#4fffb0),transparent);
+}
+.grp-detail-hero-content{position:relative;z-index:1}
+.grp-detail-back{
+  display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);
+  cursor:pointer;margin-bottom:20px;transition:color 0.2s,transform 0.2s;padding:6px 0;
+}
+.grp-detail-back:hover{color:var(--accent);transform:translateX(-3px)}
+.grp-detail-back svg{transition:transform 0.2s}
+.grp-detail-back:hover svg{transform:translateX(-3px)}
+.grp-hero-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.grp-hero-left{display:flex;align-items:center;gap:16px}
+.grp-hero-emoji{
+  width:60px;height:60px;border-radius:18px;display:flex;align-items:center;justify-content:center;
+  font-size:28px;background:var(--surface2);border:1px solid var(--border);
+  transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.grp-hero-emoji:hover{transform:scale(1.1) rotate(-8deg)}
+.grp-hero-name{font-size:24px;font-weight:800;letter-spacing:-0.5px;margin-bottom:4px}
+.grp-hero-meta{font-size:13px;color:var(--muted)}
+.grp-hero-right{display:flex;gap:8px;flex-wrap:wrap}
+
+.grp-detail-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-top:24px;padding-top:24px;border-top:1px solid var(--border)}
+.grp-detail-stat{text-align:center}
+.grp-detail-stat-val{font-size:22px;font-weight:700;font-family:var(--mono)}
+.grp-detail-stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-top:4px}
+
+.grp-detail-body{display:grid;grid-template-columns:1fr 320px;gap:16px}
+@media(max-width:900px){.grp-detail-body{grid-template-columns:1fr}}
+
+/* Member balances panel */
+.members-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;height:fit-content;position:sticky;top:80px}
+.members-panel-title{font-size:13px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.member-row{
+  display:flex;align-items:center;gap:10px;padding:10px 0;
+  border-bottom:1px solid var(--border);transition:all 0.2s;cursor:default;
+}
+.member-row:last-child{border-bottom:none;padding-bottom:0}
+.member-row:hover{padding-left:4px}
+.member-row-avatar{
+  width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;flex-shrink:0;transition:transform 0.2s;
+}
+.member-row:hover .member-row-avatar{transform:scale(1.1)}
+.member-row-info{flex:1;min-width:0}
+.member-row-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.member-row-role{font-size:11px;color:var(--muted);margin-top:1px}
+.member-row-bal{font-family:var(--mono);font-size:13px;font-weight:700;flex-shrink:0}
+
+/* Expense timeline */
+.exp-timeline{position:relative}
+.exp-timeline-item{
+  display:flex;gap:12px;margin-bottom:12px;
+  animation:slideUp 0.35s ease both;
+}
+.exp-timeline-item:nth-child(1){animation-delay:0.05s}
+.exp-timeline-item:nth-child(2){animation-delay:0.1s}
+.exp-timeline-item:nth-child(3){animation-delay:0.15s}
+.exp-timeline-item:nth-child(4){animation-delay:0.2s}
+.exp-timeline-item:nth-child(5){animation-delay:0.25s}
+.timeline-connector{display:flex;flex-direction:column;align-items:center;width:40px;flex-shrink:0}
+.timeline-dot{
+  width:10px;height:10px;border-radius:50%;border:2px solid var(--accent);background:var(--bg);
+  margin-top:14px;flex-shrink:0;transition:all 0.2s;
+}
+.exp-timeline-item:hover .timeline-dot{background:var(--accent);box-shadow:0 0 10px var(--accent-glow)}
+.timeline-line{flex:1;width:1px;background:var(--border);margin-top:4px}
+.exp-timeline-item:last-child .timeline-line{display:none}
+
+.timeline-card{
+  flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:14px 16px;transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);cursor:default;
+  position:relative;overflow:hidden;
+}
+.timeline-card::before{
+  content:'';position:absolute;top:0;left:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,var(--accent),var(--purple));
+  transform:scaleY(0);transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+.timeline-card:hover{transform:translateX(4px) translateY(-1px);border-color:rgba(79,255,176,0.3);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+.timeline-card:hover::before{transform:scaleY(1)}
+.tc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px}
+.tc-desc{font-weight:600;font-size:14px}
+.tc-amount{font-family:var(--mono);font-weight:700;font-size:15px;flex-shrink:0}
+.tc-meta{font-size:12px;color:var(--muted);margin-bottom:8px}
+.tc-splits{display:flex;flex-direction:column;gap:4px}
+.tc-split-row{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--surface2);border-radius:8px;padding:6px 10px;font-size:12px;
+  transition:background 0.15s;
+}
+.tc-split-row:hover{background:var(--surface3)}
+.tc-split-person{display:flex;align-items:center;gap:6px;font-weight:500}
+.tc-split-amt{font-family:var(--mono);font-weight:600}
+.tc-badge{
+  display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:12px;
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-left:6px;
+}
+.tc-badge-paid{background:rgba(79,255,176,0.15);color:var(--accent)}
+.tc-badge-owed{background:rgba(255,94,108,0.15);color:var(--red)}
+.tc-badge-settled{background:rgba(107,122,153,0.15);color:var(--muted)}
+.tc-notes{font-size:11px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-style:italic}
+.tc-actions{display:flex;gap:4px;margin-left:8px}
+
+/* Group detail empty state */
+.grp-empty{text-align:center;padding:48px 20px;color:var(--muted)}
+.grp-empty-icon{font-size:40px;margin-bottom:12px;display:block;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 </style>
 </head>
 <body>
@@ -464,6 +669,54 @@ select option{background:var(--surface2)}
       <div id="page-activity" class="page">
         <div class="page-head"><div class="page-title">Activity</div></div>
         <div class="card"><div id="act-list"></div></div>
+      </div>
+
+      <!-- GROUP DETAIL -->
+      <div id="page-group-detail" class="page">
+        <div class="grp-detail-hero" id="grp-detail-hero">
+          <div class="grp-detail-hero-content">
+            <div class="grp-detail-back" onclick="goTo('groups')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+              Back to Groups
+            </div>
+            <div class="grp-hero-top">
+              <div class="grp-hero-left">
+                <div class="grp-hero-emoji" id="grp-detail-emoji">🏠</div>
+                <div>
+                  <div class="grp-hero-name" id="grp-detail-name">Group</div>
+                  <div class="grp-hero-meta" id="grp-detail-meta">0 members</div>
+                </div>
+              </div>
+              <div class="grp-hero-right">
+                <button class="btn btn-primary btn-sm" id="grp-detail-add-exp">+ Add Expense</button>
+                <button class="btn btn-danger btn-sm" id="grp-detail-leave-btn">Leave Group</button>
+              </div>
+            </div>
+            <div class="grp-detail-stats">
+              <div class="grp-detail-stat"><div class="grp-detail-stat-val" id="gd-total">$0</div><div class="grp-detail-stat-label">Total Spent</div></div>
+              <div class="grp-detail-stat"><div class="grp-detail-stat-val green" id="gd-owed">$0</div><div class="grp-detail-stat-label">Owed to You</div></div>
+              <div class="grp-detail-stat"><div class="grp-detail-stat-val red" id="gd-owe">$0</div><div class="grp-detail-stat-label">You Owe</div></div>
+              <div class="grp-detail-stat"><div class="grp-detail-stat-val purple" id="gd-exp-count">0</div><div class="grp-detail-stat-label">Expenses</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="grp-detail-body">
+          <div>
+            <div class="card-head" style="margin-bottom:14px">
+              <div class="card-title">Expense History</div>
+              <select id="gd-filter" onchange="filterGroupExps()" style="padding:6px 10px;font-size:12px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:var(--font)">
+                <option value="all">All</option><option value="owe">I Owe</option><option value="owed">Owed to Me</option><option value="settled">Settled</option>
+              </select>
+            </div>
+            <div class="exp-timeline" id="grp-detail-exps"></div>
+          </div>
+          <div>
+            <div class="members-panel">
+              <div class="members-panel-title">👥 Members &amp; Balances</div>
+              <div id="grp-members-list"></div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- PROFILE -->
@@ -670,7 +923,7 @@ const DB = {
 //  APP STATE
 // ═══════════════════════════════════════════════
 let S = {
-  user: null,          // current logged-in user email
+  user: null,
   groups: [],
   expenses: [],
   activity: [],
@@ -684,6 +937,7 @@ let S = {
   editExpId: null,
   expFilter: 'all',
   currency: '$',
+  activeGroupId: null,
 };
 
 // ═══════════════════════════════════════════════
@@ -832,6 +1086,9 @@ function renderAll() {
   renderChart();
   renderProfile();
   populateExpForm();
+  if(S.activeGroupId && document.getElementById('page-group-detail').classList.contains('active')) {
+    renderGroupDetail();
+  }
 }
 
 function C(v) { return `${S.currency}${Math.abs(v).toFixed(2)}`; }
@@ -903,7 +1160,7 @@ function renderDashExpenses() {
 function renderSidebarGroups() {
   const colMap = {teal:'#4fffb0',red:'#ff5e6c',purple:'#a78bfa',yellow:'#ffc94d',blue:'#60a5fa'};
   document.getElementById('sidebar-groups-list').innerHTML = S.groups.map(g =>
-    `<div class="nav-item" onclick="goTo('groups')">
+    `<div class="nav-item" onclick="openGroupDetail(${g.id})">
       <div class="group-dot" style="background:${colMap[g.color]||'#4fffb0'}"></div>
       <span style="flex:1;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(g.name)}</span>
       <button class="leave-btn" onclick="event.stopPropagation();promptExit(${g.id})" title="Leave">✕</button>
@@ -919,14 +1176,16 @@ function renderGroups() {
     ? S.groups.map(g => {
         const bal = S.expenses.filter(e=>e.groupId===g.id&&!e.settled)
           .reduce((s,e)=>s+(e.share==='owed'?e.shareAmt:e.share==='owe'?-e.shareAmt:0),0);
-        return `<div class="group-card gc-${g.color}">
+        const expCount = S.expenses.filter(e=>e.groupId===g.id).length;
+        return `<div class="group-card gc-${g.color}" onclick="openGroupDetail(${g.id})"
+          onmousemove="this.style.setProperty('--mx',event.offsetX/this.offsetWidth*100+'%');this.style.setProperty('--my',event.offsetY/this.offsetHeight*100+'%')">
           <div class="group-emoji">${g.type.split(' ')[0]}</div>
           <div class="group-name">${esc(g.name)}</div>
-          <div class="group-members">${g.members.length} member${g.members.length>1?'s':''}: ${g.members.slice(0,2).map(esc).join(', ')}${g.members.length>2?'…':''}</div>
+          <div class="group-members">${g.members.length} member${g.members.length>1?'s':''} • ${expCount} expense${expCount!==1?'s':''}</div>
           <div class="group-bal" style="color:${bal>=0?'var(--green)':'var(--red)'}">${bal>=0?'+':''}${C(bal)}</div>
           <div class="group-actions">
-            <button class="btn btn-ghost btn-sm" onclick="openModal('exp-modal');setExpGroup(${g.id})" style="flex:1">+ Expense</button>
-            <button class="btn btn-danger btn-sm" onclick="promptExit(${g.id})">Leave</button>
+            <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openModal('exp-modal');setExpGroup(${g.id})" style="flex:1">+ Expense</button>
+            <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();promptExit(${g.id})">Leave</button>
           </div>
         </div>`;
       }).join('')
@@ -1280,12 +1539,181 @@ function exportCSV() {
 function goTo(page) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById(`page-${page}`)?.classList.add('active');
-  document.getElementById(`nav-${page}`)?.classList.add('active');
+  const el = document.getElementById(`page-${page}`);
+  if(el) el.classList.add('active');
+  const navEl = document.getElementById(`nav-${page}`);
+  if(navEl) navEl.classList.add('active');
   if(page==='expenses') renderExpenses();
   if(page==='groups') renderGroups();
   if(page==='balances') renderBalances();
   if(page==='activity') renderActivity();
+}
+
+// ═══════════════════════════════════════════════
+//  GROUP DETAIL
+// ═══════════════════════════════════════════════
+const heroColors = {teal:'#4fffb0',red:'#ff5e6c',purple:'#a78bfa',yellow:'#ffc94d',blue:'#60a5fa'};
+const avatarPalette = ['#4fffb0','#a78bfa','#ffc94d','#ff5e6c','#60a5fa','#fb923c','#34d399'];
+
+function openGroupDetail(groupId) {
+  S.activeGroupId = groupId;
+  renderGroupDetail();
+  goTo('group-detail');
+  document.getElementById('nav-groups').classList.add('active');
+}
+
+function renderGroupDetail() {
+  const g = S.groups.find(x=>x.id===S.activeGroupId);
+  if(!g) return;
+  const grpExps = S.expenses.filter(e=>e.groupId===g.id);
+
+  // Hero
+  const heroColor = heroColors[g.color] || '#4fffb0';
+  document.getElementById('grp-detail-hero').style.setProperty('--hero-color', heroColor);
+  document.getElementById('grp-detail-emoji').textContent = g.type.split(' ')[0];
+  document.getElementById('grp-detail-name').textContent = g.name;
+  document.getElementById('grp-detail-meta').textContent =
+    `${g.members.length} member${g.members.length>1?'s':''} • Created ${new Date(g.created).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}`;
+
+  // Hero buttons
+  document.getElementById('grp-detail-add-exp').onclick = () => { openModal('exp-modal'); setExpGroup(g.id); };
+  document.getElementById('grp-detail-leave-btn').onclick = () => promptExit(g.id);
+
+  // Stats
+  const total = grpExps.reduce((s,e)=>s+e.amount,0);
+  const owed  = grpExps.filter(e=>!e.settled&&e.share==='owed').reduce((s,e)=>s+e.shareAmt,0);
+  const owe   = grpExps.filter(e=>!e.settled&&e.share==='owe').reduce((s,e)=>s+e.shareAmt,0);
+  document.getElementById('gd-total').textContent = C(total);
+  document.getElementById('gd-owed').textContent = C(owed);
+  document.getElementById('gd-owe').textContent = C(owe);
+  document.getElementById('gd-exp-count').textContent = grpExps.length;
+
+  // Members panel
+  renderGroupMembers(g, grpExps);
+
+  // Expenses
+  renderGroupExpTimeline(g, grpExps, 'all');
+}
+
+function renderGroupMembers(g, grpExps) {
+  const memberBalances = {};
+  g.members.forEach((m,i) => {
+    memberBalances[m] = { name: m, balance: 0, paid: 0, color: avatarPalette[i % avatarPalette.length] };
+  });
+
+  grpExps.filter(e=>!e.settled).forEach(e => {
+    const payer = e.paidBy === 'me' ? 'You' : e.paidBy;
+    const perHead = e.amount / g.members.length;
+    g.members.forEach(m => {
+      const mName = m === 'You' ? 'You' : m;
+      if(memberBalances[m]) {
+        if(mName === payer || (e.paidBy==='me' && m==='You')) {
+          memberBalances[m].balance += e.amount - perHead;
+          memberBalances[m].paid += e.amount;
+        } else {
+          memberBalances[m].balance -= perHead;
+        }
+      }
+    });
+  });
+
+  document.getElementById('grp-members-list').innerHTML = Object.values(memberBalances).map(mb => {
+    const initials = mb.name.split(' ').map(n=>n[0].toUpperCase()).join('').substring(0,2);
+    const isYou = mb.name === 'You';
+    const bal = mb.balance;
+    return `<div class="member-row">
+      <div class="member-row-avatar" style="background:${mb.color}22;color:${mb.color}">${initials}</div>
+      <div class="member-row-info">
+        <div class="member-row-name">${esc(mb.name)}${isYou?' (you)':''}</div>
+        <div class="member-row-role">Paid ${C(mb.paid)}</div>
+      </div>
+      <div class="member-row-bal" style="color:${bal>0?'var(--green)':bal<0?'var(--red)':'var(--muted)'}">
+        ${bal>0?'+':''}${C(bal)}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterGroupExps() {
+  const g = S.groups.find(x=>x.id===S.activeGroupId);
+  if(!g) return;
+  const filter = document.getElementById('gd-filter').value;
+  let exps = S.expenses.filter(e=>e.groupId===g.id);
+  renderGroupExpTimeline(g, exps, filter);
+}
+
+function renderGroupExpTimeline(g, allExps, filter) {
+  let exps = [...allExps].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  if(filter==='owe') exps = exps.filter(e=>e.share==='owe'&&!e.settled);
+  else if(filter==='owed') exps = exps.filter(e=>e.share==='owed'&&!e.settled);
+  else if(filter==='settled') exps = exps.filter(e=>e.settled);
+
+  if(!exps.length) {
+    document.getElementById('grp-detail-exps').innerHTML =
+      `<div class="grp-empty"><span class="grp-empty-icon">💸</span><h3 style="font-size:16px;color:var(--text);margin-bottom:6px">No expenses yet</h3><p style="font-size:13px">Add the first expense to this group</p><button class="btn btn-primary btn-sm" style="margin-top:16px" onclick="openModal('exp-modal');setExpGroup(${g.id})">+ Add Expense</button></div>`;
+    return;
+  }
+
+  const catColors = {'🍕':'rgba(255,94,108,0.15)','🚗':'rgba(79,255,176,0.12)','🏠':'rgba(63,185,80,0.12)',
+    '🎉':'rgba(255,201,77,0.15)','🛍':'rgba(167,139,250,0.15)','🏥':'rgba(255,94,108,0.12)',
+    '✈️':'rgba(96,165,250,0.15)','📚':'rgba(167,139,250,0.12)','📦':'rgba(107,122,153,0.12)'};
+
+  document.getElementById('grp-detail-exps').innerHTML = exps.map(e => {
+    const catIcon = e.category.split(' ')[0];
+    const bg = catColors[catIcon] || 'rgba(107,122,153,0.12)';
+    const paidBy = e.paidBy === 'me' ? 'You' : e.paidBy;
+    const perHead = +(e.amount / g.members.length).toFixed(2);
+    const shareClass = e.settled ? 'settled-txt' : e.share==='owe' ? 'you-owe' : e.share==='owed' ? 'owed-you' : 'settled-txt';
+    const shareText = e.settled ? '✓ Settled' : e.share==='owe' ? `You owe ${C(e.shareAmt)}` : e.share==='owed' ? `Lent ${C(e.shareAmt)}` : 'Personal';
+
+    const splitRows = g.members.map((m,i) => {
+      const isPayerMember = (m==='You'&&e.paidBy==='me') || m===e.paidBy;
+      const col = avatarPalette[i % avatarPalette.length];
+      const initials = m.split(' ').map(n=>n[0].toUpperCase()).join('').substring(0,2);
+      const badge = isPayerMember
+        ? `<span class="tc-badge tc-badge-paid">Paid</span>`
+        : e.settled ? `<span class="tc-badge tc-badge-settled">Settled</span>` : `<span class="tc-badge tc-badge-owed">Owes</span>`;
+      return `<div class="tc-split-row">
+        <div class="tc-split-person">
+          <div style="width:22px;height:22px;border-radius:50%;background:${col}22;color:${col};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700">${initials}</div>
+          ${esc(m)}${badge}
+        </div>
+        <div class="tc-split-amt" style="color:${isPayerMember?'var(--green)':'var(--muted)'}">
+          ${isPayerMember ? `+${C(e.amount - perHead)}` : `-${C(perHead)}`}
+        </div>
+      </div>`;
+    }).join('');
+
+    return `<div class="exp-timeline-item">
+      <div class="timeline-connector">
+        <div class="timeline-dot"></div>
+        <div class="timeline-line"></div>
+      </div>
+      <div class="timeline-card">
+        <div class="tc-top">
+          <div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:32px;height:32px;border-radius:9px;background:${bg};display:flex;align-items:center;justify-content:center;font-size:14px">${catIcon}</div>
+              <div class="tc-desc">${esc(e.desc)}</div>
+            </div>
+            <div class="tc-meta" style="margin-top:6px;margin-left:40px">${esc(paidBy)} paid • ${fmtDate(e.date)} • ${e.category.split(' ').slice(1).join(' ')}</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px">
+            <div style="text-align:right">
+              <div class="tc-amount">${C(e.amount)}</div>
+              <div class="exp-share ${shareClass}" style="font-size:11px;margin-top:2px">${shareText}</div>
+            </div>
+            <div class="tc-actions">
+              <button class="icon-btn" onclick="editExp('${e.id}')" title="Edit">✏️</button>
+              <button class="icon-btn del" onclick="promptDelExp('${e.id}')" title="Delete">🗑</button>
+            </div>
+          </div>
+        </div>
+        <div class="tc-splits">${splitRows}</div>
+        ${e.notes ? `<div class="tc-notes">📝 ${esc(e.notes)}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ═══════════════════════════════════════════════
