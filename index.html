@@ -378,6 +378,47 @@ input::placeholder,textarea::placeholder{color:var(--muted2)}
 .mob-nav-item span{font-size:17px;width:22px;text-align:center;flex-shrink:0}
 .mob-nav-section{font-size:10px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;padding:10px 10px 4px}
 
+/* ── INVITE & PARTICIPANTS ── */
+.invite-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;background:linear-gradient(135deg,rgba(79,255,176,0.15),rgba(167,139,250,0.15));border:1px solid rgba(79,255,176,0.35);border-radius:10px;color:var(--accent);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden}
+.invite-btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,0.05);transform:scaleX(0);transform-origin:left;transition:transform 0.3s}
+.invite-btn:hover::before{transform:scaleX(1)}
+.invite-btn:hover{border-color:var(--accent);box-shadow:0 0 20px rgba(79,255,176,0.2);transform:translateY(-1px)}
+.add-member-btn{background:var(--accent-dim);border:1px solid rgba(79,255,176,0.3);color:var(--accent);border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.15s;font-family:var(--font)}
+.add-member-btn:hover{background:rgba(79,255,176,0.2)}
+.add-member-row{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.add-member-row input{flex:1;padding:8px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;color:var(--text);font-family:var(--font);font-size:13px;outline:none;transition:border-color 0.2s}
+.add-member-row input:focus{border-color:var(--accent)}
+.add-member-row button{padding:8px 13px;background:var(--accent);color:#07090f;border:none;border-radius:9px;font-weight:700;font-size:13px;cursor:pointer;transition:all 0.15s;font-family:var(--font);white-space:nowrap}
+.add-member-row button:hover{background:#3de89e}
+.member-row-remove{background:none;border:none;cursor:pointer;color:var(--muted2);font-size:13px;padding:4px;border-radius:5px;transition:all 0.15s;display:none;margin-left:4px;line-height:1}
+.member-row:hover .member-row-remove{display:block}
+.member-row-remove:hover{color:var(--red);background:var(--red-dim)}
+.members-panel-title{font-size:13px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+/* Invite modal */
+.invite-modal{max-width:480px}
+.invite-link-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:10px;margin-bottom:14px;transition:border-color 0.2s}
+.invite-link-box:hover{border-color:var(--accent)}
+.invite-link-text{flex:1;font-family:var(--mono);font-size:12px;color:var(--accent);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:text;user-select:all}
+.copy-link-btn{background:var(--accent);color:#07090f;border:none;border-radius:8px;padding:7px 14px;font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0}
+.copy-link-btn:hover{background:#3de89e;transform:scale(1.03)}
+.copy-link-btn.copied{background:#22c55e;color:white}
+.qr-wrap{text-align:center;padding:20px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;margin-bottom:16px;cursor:pointer;transition:border-color 0.2s}
+.qr-wrap:hover{border-color:var(--accent)}
+.qr-canvas{border-radius:8px;display:block;margin:0 auto}
+.invite-tabs{display:flex;gap:6px;margin-bottom:18px}
+.invite-tab{flex:1;padding:9px;border:1px solid var(--border);border-radius:9px;background:transparent;color:var(--muted);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;text-align:center}
+.invite-tab.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+.invite-panel{display:none}
+.invite-panel.active{display:block;animation:slideUp 0.2s ease}
+.share-apps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px}
+.share-app-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;border:1px solid var(--border);border-radius:11px;cursor:pointer;background:var(--surface2);transition:all 0.2s;text-decoration:none}
+.share-app-btn:hover{border-color:var(--accent);background:var(--accent-dim);transform:translateY(-2px)}
+.share-app-icon{font-size:22px;line-height:1}
+.share-app-label{font-size:10px;font-weight:600;color:var(--muted)}
+.share-app-btn:hover .share-app-label{color:var(--accent)}
+.pending-tag{font-size:10px;font-weight:600;color:var(--purple);background:rgba(167,139,250,0.1);border-radius:4px;padding:1px 5px;margin-left:4px}
+.member-row.pending .member-row-avatar{opacity:0.55;border:1px dashed currentColor}
+.member-row.pending .member-row-name{color:var(--muted)}
 /* RESPONSIVE */
 @media(max-width:768px){
   .sidebar{display:none}
@@ -570,7 +611,11 @@ input::placeholder,textarea::placeholder{color:var(--muted2)}
               </div>
               <div class="grp-hero-right">
                 <button class="btn btn-primary btn-sm" id="grp-detail-add-exp">+ Add Expense</button>
-                <button class="btn btn-danger btn-sm" id="grp-detail-leave-btn">Leave Group</button>
+                <button class="invite-btn" id="grp-detail-invite-btn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+                  Invite People
+                </button>
+                <button class="btn btn-danger btn-sm" id="grp-detail-leave-btn">Leave</button>
               </div>
             </div>
             <div class="grp-detail-stats">
@@ -593,8 +638,21 @@ input::placeholder,textarea::placeholder{color:var(--muted2)}
           </div>
           <div>
             <div class="members-panel">
-              <div class="members-panel-title">👥 Members &amp; Balances</div>
+              <div class="members-panel-title">
+                <span>👥 Members &amp; Balances</span>
+                <button class="add-member-btn" onclick="toggleAddMemberRow()">+ Add</button>
+              </div>
               <div id="grp-members-list"></div>
+              <div class="add-member-row" id="add-member-row" style="display:none">
+                <input type="text" id="new-member-name" placeholder="Member name..." onkeydown="if(event.key==='Enter')addMemberToGroup()">
+                <button onclick="addMemberToGroup()">Add</button>
+              </div>
+              <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+                <button class="invite-btn" style="width:100%;justify-content:center" id="grp-panel-invite-btn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                  Share Invite Link
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -810,6 +868,70 @@ input::placeholder,textarea::placeholder{color:var(--muted2)}
   </div>
 </div>
 
+<!-- INVITE PEOPLE MODAL -->
+<div class="overlay" id="invite-modal">
+  <div class="modal invite-modal">
+    <div class="modal-head">
+      <div class="modal-title">Invite People</div>
+      <button class="close-x" onclick="closeModal('invite-modal')">✕</button>
+    </div>
+
+    <!-- Group identity strip -->
+    <div id="invite-group-strip" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;margin-bottom:18px">
+      <div id="inv-grp-emoji" style="font-size:24px">🏠</div>
+      <div>
+        <div id="inv-grp-name" style="font-weight:700;font-size:15px">Group</div>
+        <div id="inv-grp-meta" style="font-size:12px;color:var(--muted)">0 members</div>
+      </div>
+    </div>
+
+    <!-- Tab switcher -->
+    <div class="invite-tabs">
+      <button class="invite-tab active" onclick="switchInviteTab('link',this)">🔗 Share Link</button>
+      <button class="invite-tab" onclick="switchInviteTab('qr',this)">📱 QR Code</button>
+      <button class="invite-tab" onclick="switchInviteTab('apps',this)">💬 Share Via</button>
+    </div>
+
+    <!-- Link panel -->
+    <div class="invite-panel active" id="inv-panel-link">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6">Share this link with anyone you want to invite. When they open it, they'll be added to the group automatically.</p>
+      <div class="invite-link-box">
+        <span class="invite-link-text" id="inv-link-text">Generating...</span>
+        <button class="copy-link-btn" id="copy-link-btn" onclick="copyInviteLink()">Copy</button>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm" style="flex:1" onclick="regenerateInviteLink()">🔄 New Link</button>
+        <button class="btn btn-ghost btn-sm" style="flex:1" onclick="shareNative()">↗ Share</button>
+      </div>
+    </div>
+
+    <!-- QR code panel -->
+    <div class="invite-panel" id="inv-panel-qr">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Let people scan this QR code on their phone to join the group instantly.</p>
+      <div class="qr-wrap" onclick="downloadQR()">
+        <canvas id="qr-canvas" class="qr-canvas" width="200" height="200"></canvas>
+        <div class="qr-label">Tap to download QR code</div>
+      </div>
+    </div>
+
+    <!-- Share apps panel -->
+    <div class="invite-panel" id="inv-panel-apps">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Send the invite directly through your favourite app.</p>
+      <div class="share-apps" id="share-apps-grid"></div>
+    </div>
+
+    <!-- Direct add section -->
+    <div style="margin-top:18px;padding-top:18px;border-top:1px solid var(--border)">
+      <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px">Or add directly by name</div>
+      <div class="add-member-row" style="margin-top:0;padding-top:0;border-top:none">
+        <input type="text" id="inv-direct-name" placeholder="Enter their name..." onkeydown="if(event.key==='Enter')addMemberDirect()">
+        <button onclick="addMemberDirect()">Add</button>
+      </div>
+      <div id="inv-added-list" style="margin-top:10px"></div>
+    </div>
+  </div>
+</div>
+
 <!-- BILL LIGHTBOX -->
 <div id="bill-lightbox" onclick="if(event.target===this)closeBillLightbox()">
   <button class="lb-close" onclick="closeBillLightbox()">✕</button>
@@ -847,6 +969,22 @@ const DB = {
   getReceipt: (email, expId) => localStorage.getItem(DB.receiptKey(email, expId)) || null,
   saveReceipt: (email, expId, dataUrl) => { try { localStorage.setItem(DB.receiptKey(email, expId), dataUrl); return true; } catch(e) { return false; } },
   deleteReceipt: (email, expId) => localStorage.removeItem(DB.receiptKey(email, expId)),
+  // Invite tokens: { token -> { groupId, groupOwner(email), createdAt, groupName } }
+  getInvites: () => JSON.parse(localStorage.getItem('se_invites') || '{}'),
+  saveInvites: v => localStorage.setItem('se_invites', JSON.stringify(v)),
+  createInviteToken: (email, groupId, groupName) => {
+    const token = Math.random().toString(36).substring(2,9) + Math.random().toString(36).substring(2,9);
+    const invites = DB.getInvites();
+    invites[token] = { groupId, groupOwner: email, groupName, createdAt: new Date().toISOString() };
+    DB.saveInvites(invites);
+    return token;
+  },
+  getInviteByToken: token => { const i = DB.getInvites(); return i[token] || null; },
+  revokeInviteForGroup: (email, groupId) => {
+    const invites = DB.getInvites();
+    Object.keys(invites).forEach(t => { if(invites[t].groupOwner === email && invites[t].groupId === groupId) delete invites[t]; });
+    DB.saveInvites(invites);
+  },
   hash: async str => {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
     return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
@@ -970,9 +1108,11 @@ function initApp(email) {
   document.getElementById('e-date').value=new Date().toISOString().split('T')[0];
   renderAll();
   goTo('dashboard');
+  checkPendingInviteAfterLogin();
 }
 
 window.addEventListener('load',()=>{
+  checkInviteLink();
   const session=sessionStorage.getItem('se_session');
   if(session&&DB.getUsers()[session])initApp(session);
 });
@@ -1398,9 +1538,323 @@ function promptExit(id){S.exitGroupId=id;const g=S.groups.find(g=>g.id===id);doc
 function confirmExit() {
   const g=S.groups.find(g=>g.id===S.exitGroupId);
   S.groups=S.groups.filter(g=>g.id!==S.exitGroupId);DB.saveGroups(S.user,S.groups);
+  DB.revokeInviteForGroup(S.user,S.exitGroupId);
   addActivity(`You left group <strong>${g?.name}</strong>`,'#ff5e6c');DB.saveActivity(S.user,S.activity);
   closeModal('exit-modal');renderAll();toast(`👋 Left group "${g?.name}"`);
   if(S.currentPage==='group-detail')goTo('groups');
+}
+
+// ── Add / Remove members inline ──
+function toggleAddMemberRow() {
+  const row=document.getElementById('add-member-row');
+  const isOpen=row.style.display!=='none';
+  row.style.display=isOpen?'none':'flex';
+  if(!isOpen)document.getElementById('new-member-name').focus();
+}
+
+function addMemberToGroup() {
+  const name=document.getElementById('new-member-name').value.trim();
+  if(!name)return;
+  const g=S.groups.find(x=>x.id===S.activeGroupId);
+  if(!g)return;
+  if(g.members.includes(name)||(g.pendingMembers||[]).includes(name))return toast(`⚠️ ${name} is already in this group`);
+  g.members.push(name);
+  DB.saveGroups(S.user,S.groups);
+  document.getElementById('new-member-name').value='';
+  document.getElementById('add-member-row').style.display='none';
+  addActivity(`You added <strong>${esc(name)}</strong> to <strong>${esc(g.name)}</strong>`,'#4fffb0');
+  DB.saveActivity(S.user,S.activity);
+  renderGroupDetail();renderSidebarGroups();
+  toast(`✅ ${name} added to group!`);
+}
+
+function removeMemberFromGroup(memberName) {
+  if(!confirm(`Remove ${memberName} from this group?`))return;
+  const g=S.groups.find(x=>x.id===S.activeGroupId);
+  if(!g)return;
+  g.members=g.members.filter(m=>m!==memberName);
+  if(g.pendingMembers)g.pendingMembers=g.pendingMembers.filter(m=>m!==memberName);
+  DB.saveGroups(S.user,S.groups);
+  addActivity(`You removed <strong>${esc(memberName)}</strong> from <strong>${esc(g.name)}</strong>`,'#ffc94d');
+  DB.saveActivity(S.user,S.activity);
+  renderGroupDetail();toast(`🗑 ${memberName} removed`);
+}
+
+// ── INVITE SYSTEM ──
+let S_inviteGroupId = null;
+let S_inviteToken = null;
+
+function openInviteModal(groupId) {
+  S_inviteGroupId = groupId;
+  const g = S.groups.find(x=>x.id===groupId);
+  if(!g)return;
+  // Fill group strip
+  document.getElementById('inv-grp-emoji').textContent=g.type.split(' ')[0];
+  document.getElementById('inv-grp-name').textContent=g.name;
+  document.getElementById('inv-grp-meta').textContent=`${g.members.length} member${g.members.length>1?'s':''}`;
+  // Reset direct-add list
+  document.getElementById('inv-added-list').innerHTML='';
+  document.getElementById('inv-direct-name').value='';
+  // Default tab
+  switchInviteTab('link', document.querySelector('.invite-tab'));
+  // Generate or reuse invite token
+  const existing = findExistingToken(groupId);
+  S_inviteToken = existing || DB.createInviteToken(S.user, groupId, g.name);
+  updateInviteLinkDisplay();
+  openModal('invite-modal');
+}
+
+function findExistingToken(groupId) {
+  const invites = DB.getInvites();
+  return Object.keys(invites).find(t => invites[t].groupOwner===S.user && invites[t].groupId===groupId) || null;
+}
+
+function buildInviteURL(token) {
+  const base = window.location.href.split('?')[0].split('#')[0];
+  return `${base}?join=${token}`;
+}
+
+function updateInviteLinkDisplay() {
+  const url = buildInviteURL(S_inviteToken);
+  document.getElementById('inv-link-text').textContent = url;
+  document.getElementById('copy-link-btn').textContent = 'Copy';
+  document.getElementById('copy-link-btn').classList.remove('copied');
+  // Render QR if visible
+  if(document.getElementById('inv-panel-qr').classList.contains('active')) renderQRCode(url);
+  // Render share apps
+  renderShareApps(url);
+}
+
+function switchInviteTab(tab, el) {
+  document.querySelectorAll('.invite-tab').forEach(t=>t.classList.remove('active'));
+  // find clicked element — may pass button element or just tab name
+  document.querySelectorAll('.invite-tab').forEach(t=>{if(t.textContent.toLowerCase().includes(tab))t.classList.add('active');});
+  document.querySelectorAll('.invite-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(`inv-panel-${tab}`).classList.add('active');
+  if(tab==='qr'&&S_inviteToken) renderQRCode(buildInviteURL(S_inviteToken));
+  if(tab==='apps'&&S_inviteToken) renderShareApps(buildInviteURL(S_inviteToken));
+}
+
+function copyInviteLink() {
+  const url = buildInviteURL(S_inviteToken);
+  navigator.clipboard.writeText(url).then(()=>{
+    const btn = document.getElementById('copy-link-btn');
+    btn.textContent = '✓ Copied!';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2500);
+    toast('🔗 Invite link copied to clipboard!');
+  }).catch(()=>{
+    // Fallback
+    const el = document.createElement('textarea');
+    el.value=url;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);
+    toast('🔗 Link copied!');
+  });
+}
+
+function regenerateInviteLink() {
+  DB.revokeInviteForGroup(S.user, S_inviteGroupId);
+  const g = S.groups.find(x=>x.id===S_inviteGroupId);
+  S_inviteToken = DB.createInviteToken(S.user, S_inviteGroupId, g.name);
+  updateInviteLinkDisplay();
+  toast('🔄 New invite link generated');
+}
+
+function shareNative() {
+  const url = buildInviteURL(S_inviteToken);
+  const g = S.groups.find(x=>x.id===S_inviteGroupId);
+  if(navigator.share) {
+    navigator.share({
+      title:`Join "${g?.name}" on SplitEase`,
+      text:`Hey! Join my group "${g?.name}" on SplitEase to split expenses together.`,
+      url
+    }).catch(()=>{});
+  } else {
+    copyInviteLink();
+  }
+}
+
+function renderShareApps(url) {
+  const g = S.groups.find(x=>x.id===S_inviteGroupId);
+  const text = encodeURIComponent(`Join "${g?.name}" on SplitEase — split expenses together! `);
+  const encodedUrl = encodeURIComponent(url);
+  const apps = [
+    {icon:'💬',label:'WhatsApp',href:`https://wa.me/?text=${text}${encodedUrl}`},
+    {icon:'✉️',label:'Email',href:`mailto:?subject=${encodeURIComponent(`Join ${g?.name} on SplitEase`)}&body=${text}${encodedUrl}`},
+    {icon:'🐦',label:'Twitter/X',href:`https://twitter.com/intent/tweet?text=${text}&url=${encodedUrl}`},
+    {icon:'📘',label:'Facebook',href:`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`},
+    {icon:'💼',label:'LinkedIn',href:`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`},
+    {icon:'📲',label:'Telegram',href:`https://t.me/share/url?url=${encodedUrl}&text=${text}`},
+    {icon:'📱',label:'SMS',href:`sms:?body=${text}${encodedUrl}`},
+    {icon:'📋',label:'Copy',href:'#'},
+  ];
+  document.getElementById('share-apps-grid').innerHTML = apps.map(a=>
+    `<a class="share-app-btn" href="${a.href}" target="_blank" rel="noopener" onclick="${a.label==='Copy'?'copyInviteLink();return false':''}">
+      <span class="share-app-icon">${a.icon}</span>
+      <span class="share-app-label">${a.label}</span>
+    </a>`
+  ).join('');
+}
+
+// QR Code generator (pure JS, no library needed)
+function renderQRCode(text) {
+  const canvas = document.getElementById('qr-canvas');
+  if(!canvas)return;
+  // Use a simple URL-based QR for simplicity — using Google Charts API approach but locally
+  // We'll draw a styled placeholder with the link and use a QR API
+  const size = Math.min(window.innerWidth - 100, 200);
+  canvas.width = size; canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  // Draw background
+  ctx.fillStyle = '#ffffff';
+  ctx.roundRect(0,0,size,size,12);ctx.fill();
+  // Draw QR pattern using a simple encoding visual
+  // For a real QR we use a data URL image approach via the API
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    ctx.clearRect(0,0,size,size);
+    ctx.fillStyle='#ffffff';ctx.fillRect(0,0,size,size);
+    ctx.drawImage(img,10,10,size-20,size-20);
+    // Add SplitEase logo in center
+    ctx.fillStyle='rgba(255,255,255,0.9)';
+    ctx.beginPath();ctx.arc(size/2,size/2,18,0,Math.PI*2);ctx.fill();
+    ctx.font=`${Math.floor(size/10)}px serif`;
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('✂️',size/2,size/2);
+  };
+  img.onerror = () => {
+    // Fallback: draw a simple pattern
+    ctx.fillStyle='#0f1318';ctx.fillRect(0,0,size,size);
+    ctx.fillStyle='#4fffb0';ctx.font=`${size/6}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('✂️',size/2,size/2-20);
+    ctx.font=`${size/16}px sans-serif`;ctx.fillStyle='#6b7a99';
+    ctx.fillText('QR not available',size/2,size/2+20);
+    ctx.fillText('Copy link instead →',size/2,size/2+40);
+  };
+  img.src=`https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(text)}&color=07090f&bgcolor=ffffff&qzone=1`;
+}
+
+function downloadQR() {
+  const canvas = document.getElementById('qr-canvas');
+  if(!canvas)return;
+  const a=document.createElement('a');
+  a.download=`splitease-invite-qr.png`;
+  a.href=canvas.toDataURL('image/png');
+  a.click();toast('📱 QR code downloaded!');
+}
+
+// ── Add member directly from invite modal ──
+function addMemberDirect() {
+  const name=document.getElementById('inv-direct-name').value.trim();
+  if(!name)return;
+  const g=S.groups.find(x=>x.id===S_inviteGroupId);
+  if(!g)return;
+  if(g.members.includes(name)||(g.pendingMembers||[]).includes(name)){toast(`⚠️ ${name} is already in this group`);return;}
+  g.members.push(name);
+  DB.saveGroups(S.user,S.groups);
+  document.getElementById('inv-direct-name').value='';
+  // Update the added list display
+  const list=document.getElementById('inv-added-list');
+  const chip=document.createElement('div');
+  chip.style.cssText='display:inline-flex;align-items:center;gap:6px;background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.25);color:var(--accent);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:600;margin:3px;';
+  chip.innerHTML=`✓ ${esc(name)}`;
+  list.appendChild(chip);
+  addActivity(`You added <strong>${esc(name)}</strong> to <strong>${esc(g.name)}</strong>`,'#4fffb0');
+  DB.saveActivity(S.user,S.activity);
+  // Update group meta in modal
+  document.getElementById('inv-grp-meta').textContent=`${g.members.length} member${g.members.length>1?'s':''}`;
+  renderGroupMembers(g,S.expenses.filter(e=>e.groupId===g.id));
+  renderSidebarGroups();
+  toast(`✅ ${name} added to group!`);
+}
+
+// ── Handle incoming invite links on page load ──
+function checkInviteLink() {
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('join');
+  if(!token)return;
+  const invite = DB.getInviteByToken(token);
+  if(!invite){
+    // Clean URL
+    window.history.replaceState({},'',window.location.pathname);
+    return;
+  }
+  // Show invite landing
+  S.pendingInviteToken = token;
+  S.pendingInvite = invite;
+  showInviteLanding(invite);
+}
+
+function showInviteLanding(invite) {
+  // If not logged in, show auth first with a notice
+  if(!S.user) {
+    // Store token in session for after login
+    sessionStorage.setItem('se_pending_invite', JSON.stringify({token:S.pendingInviteToken, invite}));
+    // Add a notice above auth card
+    const brand=document.querySelector('.brand');
+    if(brand){
+      const notice=document.createElement('div');
+      notice.style.cssText='background:rgba(79,255,176,0.1);border:1px solid rgba(79,255,176,0.3);border-radius:12px;padding:14px 18px;margin-bottom:16px;text-align:center;';
+      notice.innerHTML=`<div style="font-size:18px;margin-bottom:6px">🎉</div><div style="font-weight:700;color:var(--accent);margin-bottom:4px">You're invited!</div><div style="font-size:13px;color:var(--muted)">Sign in or create an account to join <strong style="color:var(--text)">${esc(invite.groupName)}</strong></div>`;
+      brand.parentNode.insertBefore(notice, brand.nextSibling);
+    }
+    window.history.replaceState({},'',window.location.pathname);
+    return;
+  }
+  // Already logged in — accept invite
+  acceptInvite(S.pendingInviteToken, invite);
+}
+
+function acceptInvite(token, invite) {
+  // Find the group in the owner's storage
+  const ownerGroups = DB.getGroups(invite.groupOwner);
+  const targetGroup = ownerGroups.find(g=>g.id===invite.groupId);
+  if(!targetGroup){toast('⚠️ This invite is no longer valid');window.history.replaceState({},'',window.location.pathname);return;}
+
+  const users=DB.getUsers();
+  const currentUser=users[S.user];
+  const memberName=currentUser?.name?.split(' ')[0]||'Someone';
+
+  // Check not already in group
+  if(targetGroup.members.includes(memberName)){
+    toast(`You're already in "${targetGroup.name}"!`);
+    window.history.replaceState({},'',window.location.pathname);
+    return;
+  }
+
+  // Add current user to the group in owner's storage
+  targetGroup.members.push(memberName);
+  DB.saveGroups(invite.groupOwner, ownerGroups);
+
+  // Also add the group to current user's groups (copy of group)
+  const alreadyHave = S.groups.find(g=>g.id===invite.groupId);
+  if(!alreadyHave){
+    S.groups.push({...targetGroup});
+    DB.saveGroups(S.user, S.groups);
+  }
+
+  addActivity(`You joined group <strong>${esc(targetGroup.name)}</strong>`,'#4fffb0');
+  DB.saveActivity(S.user,S.activity);
+
+  window.history.replaceState({},'',window.location.pathname);
+  renderAll();
+  toast(`🎉 You joined "${targetGroup.name}"!`);
+
+  // Navigate to the group detail
+  setTimeout(()=>{
+    const g=S.groups.find(g=>g.id===invite.groupId);
+    if(g)openGroupDetail(g.id);
+  },800);
+}
+
+// Check for pending invite after login
+function checkPendingInviteAfterLogin() {
+  const raw=sessionStorage.getItem('se_pending_invite');
+  if(!raw)return;
+  sessionStorage.removeItem('se_pending_invite');
+  try{
+    const {token,invite}=JSON.parse(raw);
+    setTimeout(()=>acceptInvite(token,invite),600);
+  }catch(e){}
 }
 
 // ═══ SETTLE ═══
@@ -1553,6 +2007,8 @@ function renderGroupDetail() {
   document.getElementById('grp-detail-meta').textContent=`${g.members.length} member${g.members.length>1?'s':''} • Created ${new Date(g.created).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}`;
   document.getElementById('grp-detail-add-exp').onclick=()=>{openModal('exp-modal');setExpGroup(g.id);};
   document.getElementById('grp-detail-leave-btn').onclick=()=>promptExit(g.id);
+  document.getElementById('grp-detail-invite-btn').onclick=()=>openInviteModal(g.id);
+  document.getElementById('grp-panel-invite-btn').onclick=()=>openInviteModal(g.id);
   const total=grpExps.reduce((s,e)=>s+e.amount,0);
   const owed=grpExps.filter(e=>!e.settled&&e.share==='owed').reduce((s,e)=>s+e.shareAmt,0);
   const owe=grpExps.filter(e=>!e.settled&&e.share==='owe').reduce((s,e)=>s+e.shareAmt,0);
@@ -1566,7 +2022,10 @@ function renderGroupDetail() {
 
 function renderGroupMembers(g,grpExps) {
   const mb={};
-  g.members.forEach((m,i)=>{mb[m]={name:m,balance:0,paid:0,color:avatarPalette[i%avatarPalette.length]};});
+  g.members.forEach((m,i)=>{mb[m]={name:m,balance:0,paid:0,color:avatarPalette[i%avatarPalette.length],pending:false};});
+  // Mark pending members (invited but not registered)
+  const users=DB.getUsers();
+  if(g.pendingMembers){g.pendingMembers.forEach((m,i)=>{if(!mb[m]){mb[m]={name:m,balance:0,paid:0,color:avatarPalette[(Object.keys(mb).length+i)%avatarPalette.length],pending:true};}});}
   grpExps.filter(e=>!e.settled).forEach(e=>{
     const payer=e.paidBy==='me'?'You':e.paidBy;
     const perHead=e.amount/g.members.length;
@@ -1579,10 +2038,16 @@ function renderGroupMembers(g,grpExps) {
   document.getElementById('grp-members-list').innerHTML=Object.values(mb).map(m=>{
     const initials=m.name.split(' ').map(n=>n[0].toUpperCase()).join('').substring(0,2);
     const isYou=m.name==='You';const bal=m.balance;
-    return `<div class="member-row">
+    const pendingTag=m.pending?`<span class="pending-tag">Invited</span>`:'';
+    const removeBtn=(!isYou&&!m.pending)?`<button class="member-row-remove" onclick="removeMemberFromGroup('${esc(m.name)}')" title="Remove">✕</button>`:'';
+    return `<div class="member-row${m.pending?' pending':''}">
       <div class="member-row-avatar" style="background:${m.color}22;color:${m.color}">${initials}</div>
-      <div class="member-row-info"><div class="member-row-name">${esc(m.name)}${isYou?' (you)':''}</div><div class="member-row-role">Paid ${C(m.paid)}</div></div>
-      <div class="member-row-bal" style="color:${bal>0?'var(--green)':bal<0?'var(--red)':'var(--muted)'}">${bal>0?'+':''}${C(bal)}</div>
+      <div class="member-row-info">
+        <div class="member-row-name">${esc(m.name)}${isYou?' <span style="font-size:10px;color:var(--muted)">(you)</span>':''}${pendingTag}</div>
+        <div class="member-row-role">${m.pending?'Awaiting join':'Paid '+C(m.paid)}</div>
+      </div>
+      <div class="member-row-bal" style="color:${bal>0?'var(--green)':bal<0?'var(--red)':'var(--muted)'}">${m.pending?'—':(bal>0?'+':'')+C(bal)}</div>
+      ${removeBtn}
     </div>`;
   }).join('');
 }
