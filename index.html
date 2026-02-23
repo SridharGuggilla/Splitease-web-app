@@ -378,6 +378,107 @@ input::placeholder,textarea::placeholder{color:var(--muted2)}
 .mob-nav-item span{font-size:17px;width:22px;text-align:center;flex-shrink:0}
 .mob-nav-section{font-size:10px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;padding:10px 10px 4px}
 
+/* ══════════════════════════════════════════
+   ADMIN PANEL
+══════════════════════════════════════════ */
+#admin-screen{background:var(--bg);flex-direction:column}
+.admin-login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(167,139,250,0.09) 0%,transparent 60%),var(--bg)}
+.admin-login-card{width:100%;max-width:420px;background:var(--surface);border:1px solid rgba(167,139,250,0.3);border-radius:22px;padding:36px;box-shadow:0 30px 80px rgba(0,0,0,0.7),0 0 0 1px rgba(167,139,250,0.1);animation:slideUp 0.4s ease}
+.admin-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);color:var(--purple);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;letter-spacing:0.5px;margin-bottom:18px}
+.admin-login-title{font-size:22px;font-weight:800;margin-bottom:6px}
+.admin-login-sub{font-size:13px;color:var(--muted);margin-bottom:24px}
+.admin-topbar{background:rgba(10,8,20,0.97);border-bottom:1px solid rgba(167,139,250,0.2);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;backdrop-filter:blur(12px)}
+.admin-topbar-brand{display:flex;align-items:center;gap:10px}
+.admin-logo{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--purple),#60a5fa);display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 0 16px rgba(167,139,250,0.4)}
+.admin-brand-text{font-size:16px;font-weight:800}
+.admin-brand-text span{color:var(--purple)}
+.admin-badge-top{background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.3);color:var(--purple);border-radius:6px;padding:3px 9px;font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase}
+.admin-body{display:flex;flex:1;min-height:calc(100vh - 60px)}
+.admin-sidebar{width:230px;background:var(--surface);border-right:1px solid rgba(167,139,250,0.12);padding:16px 10px;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.admin-nav-section{font-size:10px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;padding:10px 10px 6px;margin-top:4px}
+.admin-nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:all 0.15s;font-size:13px;color:var(--muted);font-weight:500;margin-bottom:1px;position:relative}
+.admin-nav-item:hover{background:rgba(167,139,250,0.08);color:var(--text)}
+.admin-nav-item.active{background:rgba(167,139,250,0.12);color:var(--purple);font-weight:600}
+.admin-nav-item.active::before{content:\'\';position:absolute;left:0;top:0;height:100%;width:3px;background:var(--purple);border-radius:0 3px 3px 0}
+.admin-nav-icon{font-size:16px;width:22px;text-align:center;flex-shrink:0}
+.admin-nav-badge{margin-left:auto;background:var(--red);color:white;border-radius:10px;padding:2px 6px;font-size:10px;font-weight:700}
+.admin-main{flex:1;overflow-y:auto;padding:28px}
+.admin-page{display:none;animation:slideUp 0.25s ease}
+.admin-page.active{display:block}
+.admin-page-title{font-size:22px;font-weight:800;margin-bottom:4px;letter-spacing:-0.3px}
+.admin-page-sub{font-size:13px;color:var(--muted);margin-bottom:24px}
+.admin-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:26px}
+.admin-stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;position:relative;overflow:hidden;transition:all 0.2s;cursor:default}
+.admin-stat:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.3)}
+.admin-stat::after{content:\'\';position:absolute;top:0;right:0;bottom:0;width:3px}
+.admin-stat.purple::after{background:var(--purple)}
+.admin-stat.green::after{background:var(--green)}
+.admin-stat.blue::after{background:var(--blue)}
+.admin-stat.red::after{background:var(--red)}
+.admin-stat.yellow::after{background:var(--yellow)}
+.admin-stat-icon{font-size:22px;margin-bottom:10px}
+.admin-stat-val{font-size:28px;font-weight:700;font-family:var(--mono);margin-bottom:4px}
+.admin-stat-label{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+.admin-stat-sub{font-size:11px;color:var(--muted2);margin-top:3px}
+.admin-table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.admin-table-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.admin-table-title{font-size:14px;font-weight:700}
+.admin-search{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:8px 12px;width:220px;transition:border-color 0.2s}
+.admin-search:focus-within{border-color:var(--purple)}
+.admin-search input{background:none;border:none;outline:none;color:var(--text);font-family:var(--font);font-size:13px;flex:1}
+.admin-search input::placeholder{color:var(--muted2)}
+table{width:100%;border-collapse:collapse}
+thead tr{background:var(--surface2)}
+th{padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap}
+td{padding:13px 16px;font-size:13px;border-top:1px solid var(--border);vertical-align:middle}
+tr:hover td{background:rgba(255,255,255,0.015)}
+.user-cell{display:flex;align-items:center;gap:10px}
+.user-cell-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.user-cell-name{font-weight:600;font-size:13px}
+.user-cell-email{font-size:11px;color:var(--muted);margin-top:1px}
+.status-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
+.status-active{background:rgba(79,255,176,0.12);color:var(--green);border:1px solid rgba(79,255,176,0.2)}
+.status-banned{background:rgba(255,94,108,0.12);color:var(--red);border:1px solid rgba(255,94,108,0.2)}
+.status-admin{background:rgba(167,139,250,0.15);color:var(--purple);border:1px solid rgba(167,139,250,0.25)}
+.tbl-btn{background:none;border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:var(--font);white-space:nowrap}
+.tbl-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+.tbl-btn.danger:hover{border-color:var(--red);color:var(--red);background:var(--red-dim)}
+.tbl-btn.purple-h:hover{border-color:var(--purple);color:var(--purple);background:rgba(167,139,250,0.1)}
+.tbl-actions{display:flex;gap:5px;flex-wrap:wrap}
+.admin-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:14px}
+.admin-card-title{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.admin-act-item{display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)}
+.admin-act-item:last-child{border-bottom:none}
+.admin-act-dot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.admin-chart-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.admin-chart-label{width:90px;font-size:12px;color:var(--muted);text-align:right;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.admin-chart-bar-wrap{flex:1;background:var(--surface2);border-radius:6px;height:22px;overflow:hidden}
+.admin-chart-bar{height:100%;border-radius:6px;transition:width 0.8s cubic-bezier(0.34,1.56,0.64,1);display:flex;align-items:center;padding-left:8px;font-size:10px;font-weight:700;color:#07090f}
+.user-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.user-detail-item{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px}
+.user-detail-label{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px}
+.user-detail-val{font-size:15px;font-weight:700;font-family:var(--mono)}
+.broadcast-area{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;width:100%;min-height:90px;color:var(--text);font-family:var(--font);font-size:14px;outline:none;resize:vertical;transition:border-color 0.2s;display:block;box-sizing:border-box}
+.broadcast-area:focus{border-color:var(--purple)}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}
+.setting-info{flex:1}
+.setting-name{font-size:14px;font-weight:600}
+.setting-desc{font-size:12px;color:var(--muted);margin-top:2px}
+.toggle-switch{position:relative;width:42px;height:24px;flex-shrink:0}
+.toggle-switch input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{position:absolute;inset:0;background:var(--surface3);border-radius:12px;cursor:pointer;transition:background 0.2s;border:1px solid var(--border)}
+.toggle-switch input:checked+.toggle-track{background:var(--purple);border-color:var(--purple)}
+.toggle-track::after{content:\'\';position:absolute;width:18px;height:18px;background:white;border-radius:50%;top:2px;left:2px;transition:transform 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.3)}
+.toggle-switch input:checked+.toggle-track::after{transform:translateX(18px)}
+.admin-pagination{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+.admin-pagination-btns{display:flex;gap:5px}
+.pg-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:var(--font)}
+.pg-btn:hover{border-color:var(--purple);color:var(--purple)}
+.pg-btn.active{background:rgba(167,139,250,0.15);border-color:var(--purple);color:var(--purple)}
+.pg-btn:disabled{opacity:0.4;cursor:not-allowed}
+@media(max-width:768px){.admin-sidebar{display:none}.admin-main{padding:16px}.admin-stats{grid-template-columns:1fr 1fr}.user-detail-grid{grid-template-columns:1fr}th:nth-child(3),td:nth-child(3),th:nth-child(4),td:nth-child(4){display:none}.admin-search{width:100%}}
+
 /* ── INVITE & PARTICIPANTS ── */
 .invite-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;background:linear-gradient(135deg,rgba(79,255,176,0.15),rgba(167,139,250,0.15));border:1px solid rgba(79,255,176,0.35);border-radius:10px;color:var(--accent);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden}
 .invite-btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,0.05);transform:scaleX(0);transform-origin:left;transition:transform 0.3s}
@@ -445,6 +546,61 @@ input::placeholder,textarea::placeholder{color:var(--muted2)}
   .user-name{display:block!important}
   .mob-add-btn{display:inline-flex!important}
 }
+
+/* ── ADMIN NAV ── */
+.adm-nav{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:all 0.15s;font-size:13px;color:var(--muted);font-weight:500;margin-bottom:1px;position:relative;user-select:none}
+.adm-nav span{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+.adm-nav:hover{background:rgba(167,139,250,0.08);color:var(--text)}
+.adm-nav.active{background:rgba(167,139,250,0.13);color:var(--purple);font-weight:600}
+.adm-nav.active::before{content:'';position:absolute;left:0;top:0;height:100%;width:3px;background:var(--purple);border-radius:0 3px 3px 0}
+/* ── ADMIN PAGE ── */
+.adm-page{display:none;animation:slideUp 0.25s ease}
+.adm-page.active{display:block}
+/* ── ADMIN STAT CARD ── */
+.adm-stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;position:relative;overflow:hidden;transition:all 0.2s;cursor:default}
+.adm-stat:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.3)}
+.adm-stat-accent{position:absolute;top:0;right:0;bottom:0;width:3px}
+.adm-stat-icon{font-size:22px;margin-bottom:10px}
+.adm-stat-val{font-size:28px;font-weight:700;font-family:var(--mono);margin-bottom:4px}
+.adm-stat-label{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+.adm-stat-sub{font-size:11px;color:var(--muted2);margin-top:3px}
+/* ── TABLE ── */
+.adm-td{padding:13px 16px;font-size:13px;border-top:1px solid var(--border);vertical-align:middle}
+.adm-tr:hover .adm-td{background:rgba(255,255,255,0.015)}
+/* ── CHART ROW ── */
+.adm-chart-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.adm-chart-lbl{width:90px;font-size:12px;color:var(--muted);text-align:right;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.adm-bar-wrap{flex:1;background:var(--surface2);border-radius:6px;height:22px;overflow:hidden}
+.adm-bar{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:10px;font-weight:700;color:#07090f;transition:width 1s cubic-bezier(0.34,1.56,0.64,1)}
+/* ── STATUS BADGES ── */
+.badge-active{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(79,255,176,0.12);color:var(--green);border:1px solid rgba(79,255,176,0.2)}
+.badge-banned{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(255,94,108,0.12);color:var(--red);border:1px solid rgba(255,94,108,0.2)}
+.badge-admin{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(167,139,250,0.15);color:var(--purple);border:1px solid rgba(167,139,250,0.25)}
+/* ── TOGGLE ── */
+.adm-toggle{position:relative;width:42px;height:24px;flex-shrink:0}
+.adm-toggle input{opacity:0;width:0;height:0;position:absolute}
+.adm-toggle-track{position:absolute;inset:0;background:var(--surface3);border-radius:12px;cursor:pointer;transition:background 0.2s;border:1px solid var(--border)}
+.adm-toggle input:checked+.adm-toggle-track{background:var(--purple);border-color:var(--purple)}
+.adm-toggle-track::after{content:'';position:absolute;width:18px;height:18px;background:white;border-radius:50%;top:2px;left:2px;transition:transform 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.3)}
+.adm-toggle input:checked+.adm-toggle-track::after{transform:translateX(18px)}
+/* ── SETTING ROW ── */
+.adm-setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
+.adm-setting-row:last-child{border-bottom:none}
+/* ── ACTION BTN ── */
+.adm-btn{background:none;border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:var(--font);white-space:nowrap}
+.adm-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+.adm-btn.red:hover{border-color:var(--red);color:var(--red);background:var(--red-dim)}
+.adm-btn.purple:hover{border-color:var(--purple);color:var(--purple);background:rgba(167,139,250,0.1)}
+/* ── PG BTNS ── */
+.pg-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:var(--font)}
+.pg-btn:hover{border-color:var(--purple);color:var(--purple)}
+.pg-btn.on{background:rgba(167,139,250,0.15);border-color:var(--purple);color:var(--purple)}
+.pg-btn:disabled{opacity:0.35;cursor:not-allowed}
+/* ── ADMIN PROFILE BUTTON ── */
+.admin-access-btn{display:inline-flex;align-items:center;gap:8px;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.3);color:var(--purple);padding:9px 18px;border-radius:10px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s}
+.admin-access-btn:hover{background:rgba(167,139,250,0.2);transform:translateY(-1px)}
+@media(max-width:768px){#admin-sidebar{display:none!important}}
+
 </style>
 </head>
 <body>
@@ -2154,6 +2310,826 @@ function uid(){return Math.random().toString(36).substring(2,9)+Date.now().toStr
 function now(){return new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});}
 function fmtDate(d){return new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+
+// ═══════════════════════════════════════════════
+//  ADMIN PANEL — SplitEase
+//  Credentials: change ADMIN_EMAIL / set password
+//  on first login via Settings tab
+// ═══════════════════════════════════════════════
+
+const ADM_CFG_KEY  = 'se_admin_cfg';
+const ADM_AUDIT_KEY = 'se_admin_audit';
+const ADM_BC_KEY    = 'se_admin_bc';
+const ADM_BAN_KEY   = 'se_banned';
+
+// ── Config helpers ──
+function admCfg() {
+  const defaults = { email:'admin@splitease.com', passHash:'', maintenance:false, registrations:true, invites:true };
+  return Object.assign(defaults, JSON.parse(localStorage.getItem(ADM_CFG_KEY)||'{}'));
+}
+function saveAdmCfg(c){ localStorage.setItem(ADM_CFG_KEY, JSON.stringify(c)); }
+
+// Seed default password hash ('Admin@2024') on first load
+(async()=>{
+  const c = admCfg();
+  if(!c.passHash){
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('Admin@2024'));
+    c.passHash = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    saveAdmCfg(c);
+  }
+})();
+
+// ── Audit log ──
+function admAudit(action, detail=''){
+  const log = JSON.parse(localStorage.getItem(ADM_AUDIT_KEY)||'[]');
+  log.unshift({action, detail, time: new Date().toISOString()});
+  if(log.length>300) log.length=300;
+  localStorage.setItem(ADM_AUDIT_KEY, JSON.stringify(log));
+}
+function clearAuditLog(){
+  localStorage.removeItem(ADM_AUDIT_KEY);
+  renderAuditLog();
+  toast('🗑 Audit log cleared');
+}
+
+// ── Ban helpers ──
+function getBanned(){ return JSON.parse(localStorage.getItem(ADM_BAN_KEY)||'[]'); }
+function saveBanned(b){ localStorage.setItem(ADM_BAN_KEY, JSON.stringify(b)); }
+
+// ── State ──
+let ADM = { on:false, page:'overview', uPage:0, uPer:10 };
+
+// ── Open admin panel ──
+function openAdminPanel(){
+  document.getElementById('auth-screen').classList.remove('active');
+  document.getElementById('app-screen').classList.remove('active');
+  document.getElementById('admin-screen').classList.add('active');
+  if(ADM.on){ showAdminApp(); } else { showAdminLogin(); }
+}
+
+function showAdminLogin(){
+  document.getElementById('admin-login-view').style.display='flex';
+  document.getElementById('admin-app-view').style.display='none';
+  document.getElementById('adm-err').textContent='';
+}
+function showAdminApp(){
+  document.getElementById('admin-login-view').style.display='none';
+  document.getElementById('admin-app-view').style.display='flex';
+  const cfg=admCfg();
+  document.getElementById('adm-topbar-email').textContent=cfg.email;
+  const t=new Date();
+  document.getElementById('adm-topbar-time').textContent=t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('adm-refresh-time').textContent='Loaded '+t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const ub=document.getElementById('adm-user-badge');
+  if(ub) ub.textContent=Object.keys(DB.getUsers()).length;
+  adminGoTo('overview');
+  loadSettingsUI();
+}
+
+function exitAdminScreen(){
+  document.getElementById('admin-screen').classList.remove('active');
+  if(S.user){
+    document.getElementById('app-screen').classList.add('active');
+  } else {
+    document.getElementById('auth-screen').classList.add('active');
+  }
+}
+
+async function adminLogin(){
+  const email = document.getElementById('adm-email').value.trim().toLowerCase();
+  const pass  = document.getElementById('adm-pass').value;
+  const errEl = document.getElementById('adm-err');
+  errEl.textContent='';
+  if(!email||!pass){ errEl.textContent='Please fill in both fields'; return; }
+  const cfg = admCfg();
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pass));
+  const hash = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  if(email!==cfg.email || hash!==cfg.passHash){
+    errEl.textContent='🚫 Invalid credentials';
+    admAudit('FAILED_LOGIN', email);
+    return;
+  }
+  ADM.on=true;
+  sessionStorage.setItem('se_admin','1');
+  admAudit('LOGIN');
+  showAdminApp();
+}
+
+function adminLogout(){
+  ADM.on=false;
+  sessionStorage.removeItem('se_admin');
+  admAudit('LOGOUT');
+  showAdminLogin();
+}
+
+function adminGoTo(page){
+  ADM.page=page;
+  document.querySelectorAll('.adm-nav').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.adm-page').forEach(p=>p.classList.remove('active'));
+  const navEl=document.getElementById('adm-nav-'+page);
+  const pageEl=document.getElementById('adm-page-'+page);
+  if(navEl) navEl.classList.add('active');
+  if(pageEl) pageEl.classList.add('active');
+  const renderers = {
+    overview: renderAdminOverview,
+    users: renderAdminUsers,
+    sessions: renderAdminSessions,
+    groups: renderAdminGroups,
+    expenses: renderAdminExpenses,
+    broadcast: renderBCHistory,
+    logs: renderAuditLog,
+    settings: loadSettingsUI,
+  };
+  if(renderers[page]) renderers[page]();
+}
+
+// ─── OVERVIEW ─────────────────────────────────────
+function renderAdminOverview(){
+  const users = DB.getUsers();
+  const emails = Object.keys(users);
+  let totalGrp=0, totalExp=0, totalSpent=0;
+  emails.forEach(e=>{
+    totalGrp+=DB.getGroups(e).length;
+    const exps=DB.getExpenses(e);
+    totalExp+=exps.length;
+    totalSpent+=exps.reduce((s,x)=>s+x.amount,0);
+  });
+  const invites=Object.keys(DB.getInvites()).length;
+  const banned=getBanned().length;
+  document.getElementById('adm-overview-sub').textContent='Last updated '+new Date().toLocaleString();
+
+  const stats=[
+    {icon:'👥',val:emails.length,label:'Total Users',sub:'Registered accounts',color:'#a78bfa'},
+    {icon:'🏘',val:totalGrp,label:'Total Groups',sub:'Across all users',color:'#4fffb0'},
+    {icon:'💸',val:totalExp,label:'Total Expenses',sub:'All transactions',color:'#60a5fa'},
+    {icon:'💰',val:'$'+totalSpent.toFixed(0),label:'Total Tracked',sub:'Combined spending',color:'#ffc94d'},
+    {icon:'🔗',val:invites,label:'Active Invites',sub:'Open invite links',color:'#fb923c'},
+    {icon:'🚫',val:banned,label:'Banned Users',sub:'Suspended accounts',color:'#ff5e6c'},
+  ];
+  document.getElementById('adm-stats-grid').innerHTML=stats.map(s=>`
+    <div class="adm-stat">
+      <div class="adm-stat-accent" style="background:${s.color}"></div>
+      <div class="adm-stat-icon">${s.icon}</div>
+      <div class="adm-stat-val">${s.val}</div>
+      <div class="adm-stat-label">${s.label}</div>
+      <div class="adm-stat-sub">${s.sub}</div>
+    </div>`).join('');
+
+  // Registration chart
+  const monthMap={};
+  emails.forEach(e=>{
+    const d=new Date(users[e].joined);
+    const k=d.toLocaleDateString('en-US',{month:'short',year:'2-digit'});
+    monthMap[k]=(monthMap[k]||0)+1;
+  });
+  const months=Object.entries(monthMap).slice(-7);
+  const maxR=Math.max(...months.map(m=>m[1]),1);
+  const barC=['#a78bfa','#60a5fa','#4fffb0','#ffc94d','#ff5e6c','#fb923c','#34d399'];
+  document.getElementById('adm-reg-chart').innerHTML=months.length
+    ? months.map((m,i)=>`<div class="adm-chart-row"><div class="adm-chart-lbl">${m[0]}</div><div class="adm-bar-wrap"><div class="adm-bar" style="width:${Math.round((m[1]/maxR)*100)}%;background:${barC[i%barC.length]}">${m[1]}</div></div></div>`).join('')
+    : '<div style="color:var(--muted);font-size:13px;padding:8px 0">No registrations yet</div>';
+
+  // Top groups
+  const gData=[];
+  emails.forEach(e=>DB.getGroups(e).forEach(g=>{
+    const ec=DB.getExpenses(e).filter(x=>x.groupId===g.id).length;
+    gData.push({name:g.name,ec,owner:users[e]?.name||e});
+  }));
+  gData.sort((a,b)=>b.ec-a.ec);
+  const topG=gData.slice(0,6);
+  const maxG=Math.max(...topG.map(g=>g.ec),1);
+  document.getElementById('adm-top-groups').innerHTML=topG.length
+    ? topG.map((g,i)=>`<div class="adm-chart-row"><div class="adm-chart-lbl" title="${g.name}">${g.name}</div><div class="adm-bar-wrap"><div class="adm-bar" style="width:${Math.round((g.ec/maxG)*100)}%;background:${barC[i%barC.length]}">${g.ec}</div></div></div>`).join('')
+    : '<div style="color:var(--muted);font-size:13px;padding:8px 0">No groups yet</div>';
+
+  // Recent activity across all users
+  const allActs=[];
+  emails.forEach(e=>DB.getActivity(e).slice(0,4).forEach(a=>allActs.push({...a,uName:users[e]?.name||e})));
+  document.getElementById('adm-recent-act').innerHTML=allActs.slice(0,12).map(a=>`
+    <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <div style="width:8px;height:8px;border-radius:50%;background:${a.color||'#4fffb0'};margin-top:5px;flex-shrink:0"></div>
+      <div><div style="font-size:13px">${a.text} <span style="color:var(--muted);font-size:11px">— ${esc(a.uName)}</span></div>
+      <div style="font-size:11px;color:var(--muted2);margin-top:2px">${a.time||''}</div></div>
+    </div>`).join('') || '<div style="color:var(--muted);font-size:13px;padding:8px 0">No activity yet</div>';
+}
+
+// ─── USERS ────────────────────────────────────────
+function renderAdminUsers(){
+  const users=DB.getUsers();
+  const emails=Object.keys(users);
+  const q=(document.getElementById('adm-user-search')?.value||'').toLowerCase();
+  const banned=getBanned();
+  const cfg=admCfg();
+  const filtered=emails.filter(e=>!q||e.includes(q)||users[e].name.toLowerCase().includes(q));
+  const total=filtered.length;
+  const start=ADM.uPage*ADM.uPer;
+  const page=filtered.slice(start,start+ADM.uPer);
+  const pal=['#4fffb0','#a78bfa','#ffc94d','#ff5e6c','#60a5fa','#fb923c','#34d399'];
+
+  document.getElementById('adm-users-title').textContent=`${total} User${total!==1?'s':''}`;
+  const ub=document.getElementById('adm-user-badge');
+  if(ub) ub.textContent=emails.length;
+
+  document.getElementById('adm-users-tbody').innerHTML=page.map((email,i)=>{
+    const u=users[email];
+    const grpC=DB.getGroups(email).length;
+    const expC=DB.getExpenses(email).length;
+    const isBan=banned.includes(email);
+    const isAdm=email===cfg.email;
+    const init=u.initials||(u.name||'?')[0].toUpperCase();
+    const col=pal[(start+i)%pal.length];
+    const badge=isAdm?'<span class="badge-admin">🛡 Admin</span>':isBan?'<span class="badge-banned">🚫 Banned</span>':'<span class="badge-active">● Active</span>';
+    return `<tr class="adm-tr">
+      <td class="adm-td"><div style="display:flex;align-items:center;gap:10px">
+        <div style="width:34px;height:34px;border-radius:50%;background:${col}22;color:${col};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">${init}</div>
+        <div><div style="font-weight:600;font-size:13px">${esc(u.name)}</div><div style="font-size:11px;color:var(--muted)">${esc(email)}</div></div>
+      </div></td>
+      <td class="adm-td" style="font-size:12px;color:var(--muted)">${new Date(u.joined).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td>
+      <td class="adm-td">${grpC}</td>
+      <td class="adm-td">${expC}</td>
+      <td class="adm-td">${badge}</td>
+      <td class="adm-td"><div style="display:flex;gap:5px;flex-wrap:wrap">
+        <button class="adm-btn" onclick="viewUserDetail('${esc(email)}')">👁 View</button>
+        <button class="adm-btn purple" onclick="admImpersonate('${esc(email)}')">🎭 Login As</button>
+        ${!isAdm?`<button class="adm-btn red" onclick="${isBan?'admUnban':'admBan'}('${esc(email)}')">${isBan?'✓ Unban':'🚫 Ban'}</button>`:''}
+        ${!isAdm?`<button class="adm-btn red" onclick="admDeleteUser('${esc(email)}')">🗑</button>`:''}
+      </div></td>
+    </tr>`;
+  }).join('')||`<tr><td colspan="6" style="padding:32px;text-align:center;color:var(--muted)">No users found</td></tr>`;
+
+  // Pagination
+  const pages=Math.ceil(total/ADM.uPer);
+  document.getElementById('adm-users-info').textContent=`Showing ${Math.min(start+1,total)}–${Math.min(start+ADM.uPer,total)} of ${total}`;
+  let pb=`<button class="pg-btn" onclick="admUPage(${ADM.uPage-1})" ${ADM.uPage===0?'disabled':''}>‹</button>`;
+  for(let p=0;p<pages;p++) pb+=`<button class="pg-btn ${p===ADM.uPage?'on':''}" onclick="admUPage(${p})">${p+1}</button>`;
+  pb+=`<button class="pg-btn" onclick="admUPage(${ADM.uPage+1})" ${ADM.uPage>=pages-1?'disabled':''}>›</button>`;
+  document.getElementById('adm-users-pages').innerHTML=pb;
+}
+function admUPage(p){ ADM.uPage=p; renderAdminUsers(); }
+
+function viewUserDetail(email){
+  const users=DB.getUsers();
+  const u=users[email];
+  if(!u)return;
+  const grps=DB.getGroups(email);
+  const exps=DB.getExpenses(email);
+  const totalSpent=exps.reduce((s,e)=>s+e.amount,0);
+  const settled=exps.filter(e=>e.settled).length;
+  const isBan=getBanned().includes(email);
+  document.getElementById('adm-modal-title').textContent=u.name;
+  document.getElementById('adm-modal-body').innerHTML=`
+    <div style="display:flex;align-items:center;gap:14px;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--border)">
+      <div style="width:54px;height:54px;border-radius:50%;background:rgba(167,139,250,0.2);color:var(--purple);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;flex-shrink:0">${u.initials||'?'}</div>
+      <div><div style="font-size:18px;font-weight:700">${esc(u.name)}</div><div style="font-size:13px;color:var(--muted);margin-top:2px">${esc(email)}</div><div style="margin-top:8px">${isBan?'<span class="badge-banned">🚫 Banned</span>':'<span class="badge-active">● Active</span>'}</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+      ${[['Joined',new Date(u.joined).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})],['Groups',grps.length],['Total Expenses',exps.length],['Total Spent','$'+totalSpent.toFixed(2)],['Settled',settled],['Outstanding',exps.length-settled]].map(([l,v])=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px"><div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px">${l}</div><div style="font-size:15px;font-weight:700;font-family:var(--mono)">${v}</div></div>`).join('')}
+    </div>
+    <div style="margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Groups (${grps.length})</div>
+      ${grps.length?grps.map(g=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--surface2);border-radius:8px;margin-bottom:6px;font-size:13px"><span>${g.type.split(' ')[0]}</span><span style="font-weight:600;flex:1">${esc(g.name)}</span><span style="color:var(--muted)">${g.members.length} members</span></div>`).join(''):'<div style="color:var(--muted);font-size:13px">No groups</div>'}
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      ${!isBan?`<button class="btn btn-danger btn-sm" onclick="admBan('${esc(email)}');closeModal('adm-user-modal')">🚫 Ban User</button>`:`<button class="btn btn-ghost btn-sm" onclick="admUnban('${esc(email)}');closeModal('adm-user-modal')">✓ Unban</button>`}
+      <button class="btn btn-danger btn-sm" onclick="admDeleteUser('${esc(email)}');closeModal('adm-user-modal')">🗑 Delete Account</button>
+      <button class="btn btn-ghost btn-sm" onclick="admImpersonate('${esc(email)}');closeModal('adm-user-modal')">🎭 Login As User</button>
+    </div>`;
+  openModal('adm-user-modal');
+}
+
+function admBan(email){
+  if(!confirm(`Ban ${email}? They will be blocked from logging in.`))return;
+  const b=getBanned(); if(!b.includes(email))b.push(email); saveBanned(b);
+  admAudit('BAN_USER',email); renderAdminUsers(); toast(`🚫 ${email} banned`);
+}
+function admUnban(email){
+  saveBanned(getBanned().filter(e=>e!==email));
+  admAudit('UNBAN_USER',email); renderAdminUsers(); toast(`✅ ${email} unbanned`);
+}
+function admDeleteUser(email){
+  if(!confirm(`Permanently delete ${email} and ALL their data? This cannot be undone.`))return;
+  const users=DB.getUsers(); delete users[email]; DB.saveUsers(users);
+  ['groups','expenses','activity','profile'].forEach(t=>localStorage.removeItem(DB.key(email,t)));
+  const pre=`se_r_${btoa(email)}_`;
+  Object.keys(localStorage).filter(k=>k.startsWith(pre)).forEach(k=>localStorage.removeItem(k));
+  saveBanned(getBanned().filter(e=>e!==email));
+  admAudit('DELETE_USER',email); renderAdminUsers(); renderAdminOverview();
+  toast(`🗑 ${email} deleted`);
+}
+function admImpersonate(email){
+  if(!DB.getUsers()[email])return toast('User not found');
+  exitAdminScreen();
+  toast(`🎭 Viewing as ${email}`);
+  initApp(email);
+  admAudit('IMPERSONATE',email);
+}
+
+// ─── SESSIONS ────────────────────────────────────
+function renderAdminSessions(){
+  const session=sessionStorage.getItem('se_session');
+  const users=DB.getUsers();
+  document.getElementById('adm-sessions-body').innerHTML=session&&users[session]
+    ?`<div style="display:flex;align-items:center;gap:14px;padding:16px;background:rgba(79,255,176,0.05);border:1px solid rgba(79,255,176,0.15);border-radius:12px">
+        <div style="width:12px;height:12px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);flex-shrink:0;animation:pulse 2s infinite"></div>
+        <div style="flex:1">
+          <div style="font-weight:700">${esc(users[session].name)}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">${esc(session)}</div>
+        </div>
+        <span class="badge-active">● Active Now</span>
+        <button class="adm-btn red" onclick="if(confirm('Force logout this user?')){sessionStorage.removeItem('se_session');renderAdminSessions();toast('User session ended');}">Force Logout</button>
+      </div>`
+    :'<div style="color:var(--muted);font-size:13px;padding:8px 0">No active user sessions right now</div>';
+}
+
+// ─── GROUPS ──────────────────────────────────────
+function renderAdminGroups(){
+  const users=DB.getUsers();
+  const q=(document.getElementById('adm-group-search')?.value||'').toLowerCase();
+  const all=[];
+  Object.entries(users).forEach(([email,u])=>DB.getGroups(email).forEach(g=>{
+    const ec=DB.getExpenses(email).filter(x=>x.groupId===g.id).length;
+    all.push({...g,ownerEmail:email,ownerName:u.name||email,ec});
+  }));
+  const f=all.filter(g=>!q||g.name.toLowerCase().includes(q)||g.ownerName.toLowerCase().includes(q));
+  const colMap={teal:'#4fffb0',red:'#ff5e6c',purple:'#a78bfa',yellow:'#ffc94d',blue:'#60a5fa'};
+  document.getElementById('adm-groups-title').textContent=`${f.length} Group${f!==1?'s':''}`;
+  document.getElementById('adm-groups-tbody').innerHTML=f.map(g=>`
+    <tr class="adm-tr">
+      <td class="adm-td"><div style="display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:${colMap[g.color]||'#4fffb0'};flex-shrink:0"></div><span style="font-weight:600">${esc(g.name)}</span><span style="font-size:11px;color:var(--muted);margin-left:4px">${g.type.split(' ')[0]}</span></div></td>
+      <td class="adm-td"><div style="font-size:13px;font-weight:600">${esc(g.ownerName)}</div><div style="font-size:11px;color:var(--muted)">${esc(g.ownerEmail)}</div></td>
+      <td class="adm-td">${g.members.length}</td>
+      <td class="adm-td">${g.ec}</td>
+      <td class="adm-td" style="font-size:12px;color:var(--muted)">${new Date(g.created).toLocaleDateString()}</td>
+      <td class="adm-td"><button class="adm-btn red" onclick="admDeleteGroup('${esc(g.ownerEmail)}',${g.id},'${esc(g.name)}')">🗑 Delete</button></td>
+    </tr>`).join('')||`<tr><td colspan="6" style="padding:32px;text-align:center;color:var(--muted)">No groups found</td></tr>`;
+}
+function admDeleteGroup(ownerEmail,groupId,name){
+  if(!confirm(`Delete group "${name}"?`))return;
+  DB.saveGroups(ownerEmail,DB.getGroups(ownerEmail).filter(g=>g.id!==groupId));
+  admAudit('DELETE_GROUP',`${name} (${ownerEmail})`);
+  renderAdminGroups(); renderAdminOverview(); toast('🗑 Group deleted');
+}
+
+// ─── EXPENSES ────────────────────────────────────
+function renderAdminExpenses(){
+  const users=DB.getUsers();
+  const q=(document.getElementById('adm-exp-search')?.value||'').toLowerCase();
+  const all=[];
+  Object.entries(users).forEach(([email,u])=>DB.getExpenses(email).forEach(e=>all.push({...e,uEmail:email,uName:u.name||email})));
+  all.sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const f=all.filter(e=>!q||e.desc.toLowerCase().includes(q)||e.uName.toLowerCase().includes(q));
+  document.getElementById('adm-exp-title').textContent=`${f.length} Expense${f.length!==1?'s':''}`;
+  document.getElementById('adm-exp-tbody').innerHTML=f.slice(0,80).map(e=>`
+    <tr class="adm-tr">
+      <td class="adm-td" style="font-weight:600;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.desc)}</td>
+      <td class="adm-td"><div style="font-size:13px">${esc(e.uName)}</div><div style="font-size:11px;color:var(--muted)">${esc(e.uEmail)}</div></td>
+      <td class="adm-td" style="font-family:var(--mono);font-weight:700;color:var(--accent)">$${Number(e.amount).toFixed(2)}</td>
+      <td class="adm-td" style="font-size:12px">${e.category||'—'}</td>
+      <td class="adm-td" style="font-size:12px;color:var(--muted)">${e.date||'—'}</td>
+      <td class="adm-td">${e.settled?'<span class="badge-active">Settled</span>':'<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(255,201,77,0.12);color:var(--yellow);border:1px solid rgba(255,201,77,0.2)">Pending</span>'}</td>
+    </tr>`).join('')||`<tr><td colspan="6" style="padding:32px;text-align:center;color:var(--muted)">No expenses found</td></tr>`;
+}
+
+// ─── BROADCAST ────────────────────────────────────
+function sendBroadcast(){
+  const msg=document.getElementById('adm-bc-msg').value.trim();
+  const color=document.getElementById('adm-bc-type').value;
+  if(!msg)return toast('⚠️ Type a message first');
+  const users=DB.getUsers(); let count=0;
+  Object.keys(users).forEach(email=>{
+    const acts=DB.getActivity(email);
+    acts.unshift({text:`📢 <strong>Admin announcement:</strong> ${msg}`,color,time:now()});
+    DB.saveActivity(email,acts); count++;
+  });
+  const bc=JSON.parse(localStorage.getItem(ADM_BC_KEY)||'[]');
+  bc.unshift({msg,color,time:new Date().toISOString(),sentTo:count});
+  localStorage.setItem(ADM_BC_KEY,JSON.stringify(bc));
+  admAudit('BROADCAST',msg.slice(0,100));
+  document.getElementById('adm-bc-msg').value='';
+  renderBCHistory(); toast(`📢 Sent to ${count} user${count!==1?'s':''}!`);
+}
+function renderBCHistory(){
+  const bc=JSON.parse(localStorage.getItem(ADM_BC_KEY)||'[]');
+  document.getElementById('adm-bc-history').innerHTML=bc.slice(0,10).map(b=>`
+    <div style="display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)">
+      <div style="width:8px;height:8px;border-radius:50%;background:${b.color};margin-top:5px;flex-shrink:0"></div>
+      <div><div style="font-size:13px">${esc(b.msg)}</div><div style="font-size:11px;color:var(--muted2);margin-top:2px">Sent to ${b.sentTo} users • ${new Date(b.time).toLocaleString()}</div></div>
+    </div>`).join('')||'<div style="color:var(--muted);font-size:13px">No broadcasts sent yet</div>';
+}
+
+// ─── SETTINGS ────────────────────────────────────
+const ADM_SETTINGS=[
+  {key:'registrations',label:'Allow New Registrations',desc:'Let new users sign up for accounts',def:true},
+  {key:'invites',label:'Allow Group Invite Links',desc:'Enable invite link & QR code generation',def:true},
+  {key:'maintenance',label:'Maintenance Mode',desc:'Show a notice to regular users when enabled',def:false},
+];
+function loadSettingsUI(){
+  const cfg=admCfg();
+  document.getElementById('adm-settings-rows').innerHTML=ADM_SETTINGS.map(s=>`
+    <div class="adm-setting-row">
+      <div style="flex:1"><div class="setting-name" style="font-size:14px;font-weight:600">${s.label}</div><div style="font-size:12px;color:var(--muted);margin-top:2px">${s.desc}</div></div>
+      <label class="adm-toggle">
+        <input type="checkbox" ${(cfg[s.key]===undefined?s.def:cfg[s.key])?'checked':''} onchange="saveSetting('${s.key}',this.checked)">
+        <span class="adm-toggle-track"></span>
+      </label>
+    </div>`).join('');
+  const el=document.getElementById('st-adm-email');
+  if(el) el.value=cfg.email;
+}
+function saveSetting(key,val){
+  const cfg=admCfg(); cfg[key]=val; saveAdmCfg(cfg);
+  admAudit('SETTING',`${key}=${val}`); toast('✅ Setting saved');
+}
+async function saveAdminCreds(){
+  const email=(document.getElementById('st-adm-email')?.value||'').trim().toLowerCase();
+  const pass=document.getElementById('st-adm-pass')?.value||'';
+  if(!email)return toast('⚠️ Email required');
+  const cfg=admCfg(); cfg.email=email;
+  if(pass){
+    const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pass));
+    cfg.passHash=Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+  saveAdmCfg(cfg);
+  if(document.getElementById('st-adm-pass')) document.getElementById('st-adm-pass').value='';
+  document.getElementById('adm-topbar-email').textContent=email;
+  admAudit('UPDATE_CREDENTIALS',email); toast('✅ Admin credentials updated!');
+}
+function adminClearInvites(){
+  if(!confirm('Clear ALL invite tokens? All invite links will stop working.'))return;
+  DB.saveInvites({}); admAudit('CLEAR_INVITES'); renderAdminOverview(); toast('🔗 All invite tokens cleared');
+}
+function adminExportBackup(){
+  const users=DB.getUsers();
+  const backup={exportedAt:new Date().toISOString(),users:{}};
+  Object.keys(users).forEach(email=>{
+    backup.users[email]={profile:users[email],groups:DB.getGroups(email),expenses:DB.getExpenses(email),activity:DB.getActivity(email)};
+  });
+  backup.invites=DB.getInvites();
+  const a=document.createElement('a');
+  a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(backup,null,2));
+  a.download=`splitease-backup-${new Date().toISOString().split('T')[0]}.json`;
+  a.click(); admAudit('EXPORT_BACKUP'); toast('💾 Backup downloaded!');
+}
+
+// ─── AUDIT LOG ────────────────────────────────────
+function renderAuditLog(){
+  const log=JSON.parse(localStorage.getItem(ADM_AUDIT_KEY)||'[]');
+  document.getElementById('adm-audit-body').innerHTML=log.slice(0,80).map(l=>`
+    <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <div style="width:8px;height:8px;border-radius:50%;background:var(--purple);margin-top:5px;flex-shrink:0"></div>
+      <div><div style="font-size:13px;font-weight:600">${esc(l.action)}</div>${l.detail?`<div style="font-size:12px;color:var(--muted)">${esc(l.detail)}</div>`:''}<div style="font-size:11px;color:var(--muted2);margin-top:2px">${new Date(l.time).toLocaleString()}</div></div>
+    </div>`).join('')||'<div style="color:var(--muted);font-size:13px;padding:8px 0">No actions logged yet</div>';
+}
+
+// ─── CSV EXPORTS ──────────────────────────────────
+function exportUsersCSV(){
+  const users=DB.getUsers(); const banned=getBanned();
+  const rows=[['Name','Email','Joined','Groups','Expenses','Total Spent','Status']];
+  Object.entries(users).forEach(([email,u])=>{
+    const exps=DB.getExpenses(email);
+    rows.push([u.name,email,new Date(u.joined).toLocaleDateString(),DB.getGroups(email).length,exps.length,'$'+exps.reduce((s,e)=>s+e.amount,0).toFixed(2),banned.includes(email)?'Banned':'Active']);
+  });
+  dlCSV(rows,'splitease-users'); admAudit('EXPORT_USERS',`${rows.length-1} users`);
+}
+function exportAllExpensesCSV(){
+  const users=DB.getUsers();
+  const rows=[['Date','Description','Category','Amount','User','Email','Group','Status']];
+  Object.entries(users).forEach(([email,u])=>{
+    const grps=DB.getGroups(email);
+    DB.getExpenses(email).forEach(e=>{
+      const gn=grps.find(g=>g.id===e.groupId)?.name||'Personal';
+      rows.push([e.date,e.desc,e.category,e.amount,u.name,email,gn,e.settled?'Settled':'Pending']);
+    });
+  });
+  dlCSV(rows,'splitease-all-expenses'); admAudit('EXPORT_EXPENSES',`${rows.length-1} expenses`);
+}
+function dlCSV(rows,name){
+  const csv=rows.map(r=>r.map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download=`${name}-${new Date().toISOString().split('T')[0]}.csv`;
+  a.click(); toast('📥 CSV downloaded!');
+}
+
+// ─── HOOK: check ban on login ──────────────────────
+const _origLogin = typeof login === 'function' ? login : null;
+window._admOrigLogin = window.login;
+window.login = async function(){
+  const email=(document.getElementById('li-email')?.value||'').trim().toLowerCase();
+  const banned=getBanned();
+  if(banned.includes(email)){
+    const el=document.getElementById('li-err');
+    if(el){el.style.display='block';el.textContent='🚫 This account has been suspended. Contact support.';}
+    return;
+  }
+  return window._admOrigLogin();
+};
+
+// ─── HOOK: admin button in profile ─────────────────
+function injectAdminBtn(){
+  const cfg=admCfg();
+  if(S.user===cfg.email && !document.getElementById('adm-profile-btn')){
+    const cards=document.querySelectorAll('#page-profile .profile-card');
+    const last=cards[cards.length-1];
+    if(last){
+      const d=document.createElement('div');
+      d.style.cssText='margin-top:14px;padding-top:14px;border-top:1px solid var(--border)';
+      d.innerHTML=`<button id="adm-profile-btn" class="admin-access-btn" onclick="openAdminPanel()">🛡 Open Admin Panel</button>`;
+      last.appendChild(d);
+    }
+  }
+}
+
+// ─── RESTORE ADMIN SESSION ─────────────────────────
+window.addEventListener('load',()=>{
+  if(sessionStorage.getItem('se_admin')==='1') ADM.on=true;
+},false);
+
+// Inject admin button after navigation to profile
+const _origGoTo = window.goTo;
+window.goTo = function(page){
+  _origGoTo(page);
+  if(page==='profile') setTimeout(injectAdminBtn, 100);
+};
+
 </script>
+
+<!-- ═══════════════ ADMIN SCREEN ═══════════════ -->
+<div id="admin-screen" class="screen">
+
+  <!-- ADMIN LOGIN -->
+  <div id="admin-login-view" style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(167,139,250,0.1) 0%,transparent 60%),var(--bg)">
+    <div style="width:100%;max-width:420px">
+      <div style="text-align:center;margin-bottom:32px">
+        <div style="width:60px;height:60px;border-radius:20px;background:linear-gradient(135deg,var(--purple),#60a5fa);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px;box-shadow:0 0 40px rgba(167,139,250,0.4)">🛡</div>
+        <div style="font-size:26px;font-weight:800">Admin<span style="color:var(--purple)">Panel</span></div>
+        <div style="font-size:13px;color:var(--muted);margin-top:4px">SplitEase — Restricted Access</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid rgba(167,139,250,0.25);border-radius:20px;padding:32px;box-shadow:0 30px 80px rgba(0,0,0,0.6)">
+        <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);color:var(--purple);border-radius:20px;padding:5px 13px;font-size:12px;font-weight:700;letter-spacing:0.5px;margin-bottom:20px">🛡 AUTHORISED PERSONNEL ONLY</div>
+        <div class="form-group"><label>Admin Email</label><input type="email" id="adm-email" placeholder="your@email.com" autocomplete="off" onkeydown="if(event.key==='Enter')adminLogin()"></div>
+        <div class="form-group"><label>Admin Password</label><input type="password" id="adm-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')adminLogin()"></div>
+        <div id="adm-err" style="font-size:12px;color:var(--red);margin-bottom:12px;min-height:18px;text-align:center"></div>
+        <button class="btn btn-primary" style="background:linear-gradient(135deg,var(--purple),#60a5fa);color:white" onclick="adminLogin()">🛡 Access Admin Panel →</button>
+        <div style="text-align:center;margin-top:16px;font-size:12px;color:var(--muted)"><a onclick="exitAdminScreen()" style="cursor:pointer;color:var(--muted);text-decoration:underline">← Back to SplitEase</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN APP (shown after login) -->
+  <div id="admin-app-view" style="display:none;flex-direction:column;flex:1;min-height:100vh">
+
+    <!-- Admin Topbar -->
+    <div style="background:rgba(8,6,18,0.98);border-bottom:1px solid rgba(167,139,250,0.2);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;backdrop-filter:blur(12px)">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--purple),#60a5fa);display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 0 16px rgba(167,139,250,0.35)">🛡</div>
+        <div style="font-size:16px;font-weight:800">Split<span style="color:var(--purple)">Ease</span></div>
+        <div style="background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.3);color:var(--purple);border-radius:6px;padding:3px 9px;font-size:10px;font-weight:700;letter-spacing:1px">ADMIN</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div id="adm-topbar-time" style="font-size:11px;color:var(--muted)"></div>
+        <div id="adm-topbar-email" style="font-size:12px;color:var(--purple);font-weight:600"></div>
+        <button onclick="exitAdminScreen()" style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);padding:7px 14px;border-radius:8px;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:600;transition:all 0.2s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">← App</button>
+        <button onclick="adminLogout()" style="background:var(--red-dim);border:1px solid rgba(255,94,108,0.3);color:var(--red);padding:7px 14px;border-radius:8px;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:600">Sign Out</button>
+      </div>
+    </div>
+
+    <!-- Admin Body -->
+    <div style="display:flex;flex:1;overflow:hidden;height:calc(100vh - 60px)">
+
+      <!-- Admin Sidebar -->
+      <nav id="admin-sidebar" style="width:230px;background:var(--surface);border-right:1px solid rgba(167,139,250,0.12);padding:14px 10px;display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0">
+        <div style="font-size:10px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;padding:8px 10px 5px">Overview</div>
+        <div class="adm-nav active" id="adm-nav-overview" onclick="adminGoTo('overview')"><span>📊</span> Dashboard</div>
+
+        <div style="font-size:10px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;padding:12px 10px 5px">Users</div>
+        <div class="adm-nav" id="adm-nav-users" onclick="adminGoTo('users')"><span>👥</span> All Users <span id="adm-user-badge" style="margin-left:auto;background:var(--purple);color:white;border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700">0</span></div>
+        <div class="adm-nav" id="adm-nav-sessions" onclick="adminGoTo('sessions')"><span>🟢</span> Live Sessions</div>
+
+        <div style="font-size:10px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;padding:12px 10px 5px">Content</div>
+        <div class="adm-nav" id="adm-nav-groups" onclick="adminGoTo('groups')"><span>🏘</span> All Groups</div>
+        <div class="adm-nav" id="adm-nav-expenses" onclick="adminGoTo('expenses')"><span>💸</span> All Expenses</div>
+
+        <div style="font-size:10px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;padding:12px 10px 5px">Tools</div>
+        <div class="adm-nav" id="adm-nav-broadcast" onclick="adminGoTo('broadcast')"><span>📢</span> Broadcast</div>
+        <div class="adm-nav" id="adm-nav-settings" onclick="adminGoTo('settings')"><span>⚙️</span> Settings</div>
+        <div class="adm-nav" id="adm-nav-logs" onclick="adminGoTo('logs')"><span>📋</span> Audit Log</div>
+
+        <div style="margin-top:auto;padding-top:12px;border-top:1px solid rgba(167,139,250,0.12)">
+          <div style="font-size:11px;color:var(--muted2);padding:6px 12px" id="adm-refresh-time"></div>
+        </div>
+      </nav>
+
+      <!-- Admin Main -->
+      <main style="flex:1;overflow-y:auto;padding:28px;background:var(--bg)">
+
+        <!-- ── OVERVIEW ── -->
+        <div class="adm-page active" id="adm-page-overview">
+          <div style="font-size:22px;font-weight:800;margin-bottom:4px">Dashboard Overview</div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:24px" id="adm-overview-sub">—</div>
+          <div id="adm-stats-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+              <div style="font-size:13px;font-weight:700;margin-bottom:14px">📈 Registrations by Month</div>
+              <div id="adm-reg-chart"></div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+              <div style="font-size:13px;font-weight:700;margin-bottom:14px">🏆 Top Groups by Activity</div>
+              <div id="adm-top-groups"></div>
+            </div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+            <div style="font-size:13px;font-weight:700;margin-bottom:14px">🔔 Recent Platform Activity</div>
+            <div id="adm-recent-act"></div>
+          </div>
+        </div>
+
+        <!-- ── USERS ── -->
+        <div class="adm-page" id="adm-page-users">
+          <div style="font-size:22px;font-weight:800;margin-bottom:4px">User Management</div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:24px">View, moderate and manage all registered accounts</div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+            <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+              <div style="font-size:14px;font-weight:700" id="adm-users-title">All Users</div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                <div style="display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:8px 12px;width:220px">
+                  <span style="color:var(--muted);font-size:13px">🔍</span>
+                  <input type="text" id="adm-user-search" placeholder="Search name or email…" oninput="renderAdminUsers()" style="background:none;border:none;outline:none;color:var(--text);font-family:var(--font);font-size:13px;flex:1;width:0">
+                </div>
+                <button onclick="exportUsersCSV()" style="background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);color:var(--purple);padding:8px 14px;border-radius:8px;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:700">⬇ CSV</button>
+              </div>
+            </div>
+            <div style="overflow-x:auto">
+              <table style="width:100%;border-collapse:collapse">
+                <thead><tr style="background:var(--surface2)">
+                  <th style="padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">User</th>
+                  <th style="padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Joined</th>
+                  <th style="padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Groups</th>
+                  <th style="padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Expenses</th>
+                  <th style="padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Status</th>
+                  <th style="padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Actions</th>
+                </tr></thead>
+                <tbody id="adm-users-tbody"></tbody>
+              </table>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)">
+              <span id="adm-users-info">—</span>
+              <div id="adm-users-pages" style="display:flex;gap:5px"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SESSIONS ── -->
+        <div class="adm-page" id="adm-page-sessions">
+          <div style="font-size:22px;font-weight:800;margin-bottom:4px">Live Sessions</div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:24px">Users currently active in this browser</div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px" id="adm-sessions-body"></div>
+        </div>
+
+        <!-- ── GROUPS ── -->
+        <div class="adm-page" id="adm-page-groups">
+          <div style="font-size:22px;font-weight:800;margin-bottom:4px">All Groups</div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:24px">Every group created across all user accounts</div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+            <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+              <div style="font-size:14px;font-weight:700" id="adm-groups-title">All Groups</div>
+              <div style="display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:8px 12px;width:220px">
+                <span style="color:var(--muted);font-size:13px">🔍</span>
+                <input type="text" id="adm-group-search" placeholder="Search groups…" oninput="renderAdminGroups()" style="background:none;border:none;outline:none;color:var(--text);font-family:var(--font);font-size:13px;flex:1;width:0">
+              </div>
+            </div>
+            <div style="overflow-x:auto">
+              <table style="width:100%;border-collapse:collapse">
+                <thead><tr style="background:var(--surface2)">
+                  <th style="padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Group</th>
+                  <th style="padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Owner</th>
+                  <th style="padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Members</th>
+                  <th style="padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Expenses</th>
+                  <th style="padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Created</th>
+                  <th style="padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Actions</th>
+                </tr></thead>
+                <tbody id="adm-groups-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── EXPENSES ── -->
+        <div class="adm-page" id="adm-page-expenses">
+          <div style="font-size:22px;font-weight:800;margin-bottom:4px">All Expenses</div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:24px">Every transaction logged across all accounts</div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+            <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+              <div style="font-size:14px;font-weight:700" id="adm-exp-title">All Expenses</div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                <div style="display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:8px 12px;width:220px">
+                  <span style="color:var(--muted);font-size:13px">🔍</span>
+                  <input type="text" id="adm-exp-search" placeholder="Search expenses…" oninput="renderAdminExpenses()" style="background:none;border:none;outline:none;color:var(--text);font-family:var(--font);font-size:13px;flex:1;width:0">
+                </div>
+                <button onclick="exportAllExpensesCSV()" style="background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);color:var(--purple);padding:8px 14px;border-radius:8px;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:700">⬇ CSV</button>
+              </div>
+            </div>
+            <div style="overflow-x:auto">
+              <table style="width:100%;border-collapse:collapse">
+                <thead><tr style="background:var(--surface2)">
+                  <th style="padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Description</th>
+                  <th style="padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">User</th>
+                  <th style="padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Amount</th>
+                  <th style="padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Category</th>
+                  <th style="padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Date</th>
+                  <th style="padding:11px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Status</th>
+                </tr></thead>
+                <tbody id="adm-exp-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── BROADCAST ── -->
+        <div class="adm-page" id="adm-page-broadcast">
+          <div style="font-size:22px;font-weight:800;margin-bottom:4px">Broadcast Message</div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:24px">Send a message to all users — appears in their Activity feed</div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:16px">
+            <div class="form-group"><label>Message</label><textarea id="adm-bc-msg" placeholder="Type your announcement…" rows="3" style="resize:vertical"></textarea></div>
+            <div class="form-group"><label>Type</label>
+              <select id="adm-bc-type" style="max-width:260px">
+                <option value="#4fffb0">✅ Info / Announcement</option>
+                <option value="#ffc94d">⚠️ Warning</option>
+                <option value="#ff5e6c">🚨 Important Alert</option>
+                <option value="#a78bfa">🎉 Celebration</option>
+                <option value="#60a5fa">💙 Product Update</option>
+              </select>
+            </div>
+            <button onclick="sendBroadcast()" class="btn btn-primary" style="background:linear-gradient(135deg,var(--purple),#60a5fa);color:white;width:auto;padding:11px 28px">📢 Send to All Users</button>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+            <div style="font-size:13px;font-weight:700;margin-bottom:14px">📜 Broadcast History</div>
+            <div id="adm-bc-history"></div>
+          </div>
+        </div>
+
+        <!-- ── SETTINGS ── -->
+        <div class="adm-page" id="adm-page-settings">
+          <div style="font-size:22px;font-weight:800;margin-bottom:4px">Settings</div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:24px">Platform configuration and admin credentials</div>
+
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:14px">
+            <div style="font-size:14px;font-weight:700;margin-bottom:16px">🔧 Platform Controls</div>
+            <div id="adm-settings-rows"></div>
+          </div>
+
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:14px">
+            <div style="font-size:14px;font-weight:700;margin-bottom:16px">🛡 Admin Credentials</div>
+            <div class="row2">
+              <div class="form-group"><label>Admin Email</label><input type="email" id="st-adm-email" placeholder="admin@example.com"></div>
+              <div class="form-group"><label>New Password</label><input type="password" id="st-adm-pass" placeholder="Leave blank to keep current"></div>
+            </div>
+            <button onclick="saveAdminCreds()" class="btn btn-ghost btn-sm" style="width:auto">Save Credentials</button>
+          </div>
+
+          <div style="background:var(--surface);border:1px solid rgba(255,94,108,0.2);border-radius:var(--radius);padding:22px">
+            <div style="font-size:14px;font-weight:700;margin-bottom:16px;color:var(--red)">⚠️ Danger Zone</div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--red-dim);border:1px solid rgba(255,94,108,0.2);border-radius:10px;flex-wrap:wrap;gap:8px">
+                <div><div style="font-weight:600;font-size:13px">Clear All Invite Tokens</div><div style="font-size:12px;color:var(--muted);margin-top:2px">Invalidates all existing invite links</div></div>
+                <button onclick="adminClearInvites()" style="background:var(--red-dim);border:1px solid rgba(255,94,108,0.3);color:var(--red);padding:7px 14px;border-radius:8px;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:600">Clear All</button>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--red-dim);border:1px solid rgba(255,94,108,0.2);border-radius:10px;flex-wrap:wrap;gap:8px">
+                <div><div style="font-weight:600;font-size:13px">Export Full Data Backup</div><div style="font-size:12px;color:var(--muted);margin-top:2px">Download all platform data as JSON</div></div>
+                <button onclick="adminExportBackup()" style="background:var(--red-dim);border:1px solid rgba(255,94,108,0.3);color:var(--red);padding:7px 14px;border-radius:8px;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:600">Export JSON</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── AUDIT LOG ── -->
+        <div class="adm-page" id="adm-page-logs">
+          <div style="font-size:22px;font-weight:800;margin-bottom:4px">Audit Log</div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:24px">All admin actions recorded this session</div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+            <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+              <button onclick="clearAuditLog()" style="background:var(--red-dim);border:1px solid rgba(255,94,108,0.3);color:var(--red);padding:7px 14px;border-radius:8px;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:600">🗑 Clear Log</button>
+            </div>
+            <div id="adm-audit-body"></div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div><!-- end admin-app-view -->
+</div><!-- end admin-screen -->
+
+<!-- USER DETAIL MODAL -->
+<div class="overlay" id="adm-user-modal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-head">
+      <div class="modal-title" id="adm-modal-title">User Details</div>
+      <button class="close-x" onclick="closeModal('adm-user-modal')">✕</button>
+    </div>
+    <div id="adm-modal-body"></div>
+  </div>
+</div>
+
 </body>
 </html>
