@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SplitEase — Split Expenses Effortlessly</title>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<!-- EmailJS for OTP -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -601,6 +606,33 @@ tr:hover td{background:rgba(255,255,255,0.015)}
 .admin-access-btn:hover{background:rgba(167,139,250,0.2);transform:translateY(-1px)}
 @media(max-width:768px){#admin-sidebar{display:none!important}}
 
+
+/* ── PASSWORD TOGGLE ── */
+.pass-wrap{position:relative}
+.pass-wrap input{padding-right:44px}
+.pass-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;padding:4px;line-height:1;transition:color 0.15s;user-select:none}
+.pass-eye:hover{color:var(--accent)}
+/* ── FORGOT / OTP ── */
+#forgot-panel,#otp-panel,#reset-panel{display:none}
+.otp-inputs{display:flex;gap:10px;justify-content:center;margin:20px 0}
+.otp-digit{width:52px;height:56px;background:var(--surface2);border:2px solid var(--border);border-radius:12px;color:var(--text);font-family:var(--mono);font-size:22px;font-weight:700;text-align:center;outline:none;transition:border-color 0.2s,box-shadow 0.2s}
+.otp-digit:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+.otp-digit.filled{border-color:rgba(79,255,176,0.4)}
+.resend-link{font-size:12px;color:var(--muted);text-align:center;margin-top:10px}
+.resend-link a{color:var(--accent);cursor:pointer;font-weight:600}
+.resend-link a:hover{text-decoration:underline}
+/* ── LOADING OVERLAY ── */
+#db-loading{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+#db-loading.hidden{display:none}
+.db-spinner{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
+.db-loading-txt{font-size:14px;color:var(--muted)}
+/* ── BACK LINK ── */
+.auth-back{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer;margin-bottom:16px;transition:color 0.15s}
+.auth-back:hover{color:var(--accent)}
+/* ── STRENGTH METER ── */
+.strength-bar{height:3px;border-radius:3px;margin-top:6px;background:var(--border);overflow:hidden;transition:all 0.3s}
+.strength-fill{height:100%;border-radius:3px;transition:width 0.3s,background 0.3s}
+
 </style>
 </head>
 <body>
@@ -614,27 +646,123 @@ tr:hover td{background:rgba(255,255,255,0.015)}
       <div class="brand-tag">Split expenses, not friendships</div>
     </div>
     <div class="auth-card">
+
+      <!-- LOGIN -->
       <div id="login-panel">
         <div class="auth-title">Welcome back</div>
         <div class="auth-sub">Sign in to your account</div>
-        <div class="form-group"><label>Email Address</label><input type="email" id="li-email" placeholder="you@example.com" autocomplete="email"><div class="error-msg" id="li-email-err">Please enter a valid email</div></div>
-        <div class="form-group"><label>Password</label><input type="password" id="li-pass" placeholder="••••••••" autocomplete="current-password"><div class="error-msg" id="li-pass-err">Password is required</div></div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="li-email" placeholder="you@example.com" autocomplete="email" onkeydown="if(event.key==='Enter')login()">
+          <div class="error-msg" id="li-email-err"></div>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="pass-wrap">
+            <input type="password" id="li-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
+            <button type="button" class="pass-eye" onclick="togglePass('li-pass',this)" tabindex="-1">👁</button>
+          </div>
+          <div class="error-msg" id="li-pass-err"></div>
+        </div>
+        <div style="text-align:right;margin-top:-8px;margin-bottom:16px">
+          <a onclick="showPanel('forgot')" style="font-size:12px;color:var(--muted);cursor:pointer;transition:color 0.15s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">Forgot password?</a>
+        </div>
         <div class="error-msg" id="li-err" style="display:block;margin-bottom:12px;text-align:center"></div>
-        <button class="btn btn-primary" onclick="login()">Sign In →</button>
+        <button class="btn btn-primary" id="li-btn" onclick="login()">Sign In →</button>
         <div class="divider">or</div>
         <div class="auth-toggle">New to SplitEase? <a onclick="showPanel('register')">Create free account</a></div>
       </div>
+
+      <!-- REGISTER -->
       <div id="register-panel" style="display:none">
         <div class="auth-title">Create account</div>
         <div class="auth-sub">Start splitting expenses for free</div>
-        <div class="form-group"><label>Full Name</label><input type="text" id="reg-name" placeholder="Your full name" autocomplete="name"><div class="error-msg" id="reg-name-err">Name is required</div></div>
-        <div class="form-group"><label>Email Address</label><input type="email" id="reg-email" placeholder="you@example.com" autocomplete="email"><div class="error-msg" id="reg-email-err">Please enter a valid email</div></div>
-        <div class="form-group"><label>Password</label><input type="password" id="reg-pass" placeholder="Minimum 6 characters" autocomplete="new-password"><div class="error-msg" id="reg-pass-err">Password must be at least 6 characters</div></div>
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="reg-name" placeholder="Your full name" autocomplete="name">
+          <div class="error-msg" id="reg-name-err"></div>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="reg-email" placeholder="you@example.com" autocomplete="email">
+          <div class="error-msg" id="reg-email-err"></div>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="pass-wrap">
+            <input type="password" id="reg-pass" placeholder="Minimum 6 characters" autocomplete="new-password" oninput="checkStrength(this.value)">
+            <button type="button" class="pass-eye" onclick="togglePass('reg-pass',this)" tabindex="-1">👁</button>
+          </div>
+          <div class="strength-bar"><div class="strength-fill" id="strength-fill" style="width:0%"></div></div>
+          <div class="error-msg" id="reg-pass-err"></div>
+        </div>
         <div class="error-msg" id="reg-err" style="display:block;margin-bottom:12px;text-align:center"></div>
-        <button class="btn btn-primary" onclick="register()">Create Account →</button>
+        <button class="btn btn-primary" id="reg-btn" onclick="register()">Create Account →</button>
         <div class="divider">or</div>
         <div class="auth-toggle">Already have an account? <a onclick="showPanel('login')">Sign in</a></div>
       </div>
+
+      <!-- FORGOT PASSWORD -->
+      <div id="forgot-panel">
+        <div class="auth-back" onclick="showPanel('login')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+          Back to Sign In
+        </div>
+        <div class="auth-title">Forgot Password?</div>
+        <div class="auth-sub">Enter your email and we'll send a 6-digit OTP to reset your password.</div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="fp-email" placeholder="you@example.com" onkeydown="if(event.key==='Enter')sendOTP()">
+          <div class="error-msg" id="fp-email-err"></div>
+        </div>
+        <div class="error-msg" id="fp-err" style="display:block;margin-bottom:12px;text-align:center"></div>
+        <button class="btn btn-primary" id="fp-btn" onclick="sendOTP()">📧 Send OTP →</button>
+      </div>
+
+      <!-- OTP VERIFY -->
+      <div id="otp-panel">
+        <div class="auth-back" onclick="showPanel('forgot')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+          Change email
+        </div>
+        <div class="auth-title">Enter OTP</div>
+        <div class="auth-sub" id="otp-sub">We sent a 6-digit code to your email.</div>
+        <div class="otp-inputs">
+          <input class="otp-digit" type="text" maxlength="1" inputmode="numeric" oninput="otpInput(this,0)" onkeydown="otpKey(event,0)">
+          <input class="otp-digit" type="text" maxlength="1" inputmode="numeric" oninput="otpInput(this,1)" onkeydown="otpKey(event,1)">
+          <input class="otp-digit" type="text" maxlength="1" inputmode="numeric" oninput="otpInput(this,2)" onkeydown="otpKey(event,2)">
+          <input class="otp-digit" type="text" maxlength="1" inputmode="numeric" oninput="otpInput(this,3)" onkeydown="otpKey(event,3)">
+          <input class="otp-digit" type="text" maxlength="1" inputmode="numeric" oninput="otpInput(this,4)" onkeydown="otpKey(event,4)">
+          <input class="otp-digit" type="text" maxlength="1" inputmode="numeric" oninput="otpInput(this,5)" onkeydown="otpKey(event,5)">
+        </div>
+        <div class="error-msg" id="otp-err" style="display:block;margin-bottom:12px;text-align:center"></div>
+        <button class="btn btn-primary" id="otp-btn" onclick="verifyOTP()">✓ Verify OTP →</button>
+        <div class="resend-link">Didn't get it? <a onclick="resendOTP()" id="resend-link">Resend OTP</a> <span id="resend-timer"></span></div>
+      </div>
+
+      <!-- RESET PASSWORD -->
+      <div id="reset-panel">
+        <div class="auth-title">Create New Password</div>
+        <div class="auth-sub">Choose a strong password for your account.</div>
+        <div class="form-group">
+          <label>New Password</label>
+          <div class="pass-wrap">
+            <input type="password" id="rp-pass" placeholder="Minimum 6 characters" oninput="checkStrength(this.value)">
+            <button type="button" class="pass-eye" onclick="togglePass('rp-pass',this)" tabindex="-1">👁</button>
+          </div>
+          <div class="strength-bar"><div class="strength-fill" id="strength-fill2" style="width:0%"></div></div>
+        </div>
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <div class="pass-wrap">
+            <input type="password" id="rp-pass2" placeholder="Repeat password" onkeydown="if(event.key==='Enter')resetPassword()">
+            <button type="button" class="pass-eye" onclick="togglePass('rp-pass2',this)" tabindex="-1">👁</button>
+          </div>
+        </div>
+        <div class="error-msg" id="rp-err" style="display:block;margin-bottom:12px;text-align:center"></div>
+        <button class="btn btn-primary" id="rp-btn" onclick="resetPassword()">🔐 Save New Password →</button>
+      </div>
+
     </div>
   </div>
 </div>
@@ -1105,29 +1233,144 @@ tr:hover td{background:rgba(255,255,255,0.015)}
 <div id="toast"></div>
 
 <script>
-// ═══ STORAGE ═══
+
+// ╔══════════════════════════════════════════════════════════════════════╗
+// ║              SPLITEASE — SETUP INSTRUCTIONS                          ║
+// ║                                                                      ║
+// ║  This app uses Firebase Realtime Database for cross-device sync.    ║
+// ║  Follow these 3 steps to make it work:                              ║
+// ║                                                                      ║
+// ║  STEP 1: Create a Firebase project                                   ║
+// ║    → https://console.firebase.google.com                            ║
+// ║    → "Add project" → name it → continue                             ║
+// ║                                                                      ║
+// ║  STEP 2: Add a Realtime Database                                     ║
+// ║    → Build → Realtime Database → Create database                    ║
+// ║    → Start in TEST MODE (so anyone can read/write)                   ║
+// ║    → Copy the database URL (ends in .firebaseio.com)                ║
+// ║                                                                      ║
+// ║  STEP 3: Get your config & paste it in FIREBASE_CONFIG below        ║
+// ║    → Project Settings (gear icon) → Your apps → Web app             ║
+// ║    → Register app → copy the firebaseConfig object                   ║
+// ║                                                                      ║
+// ║  EMAILJS (for OTP password reset emails):                           ║
+// ║    → https://www.emailjs.com  (free 200 emails/month)               ║
+// ║    → Create account → Add Email Service → Create Template           ║
+// ║    → Template variables: {{to_email}} {{otp_code}} {{user_name}}    ║
+// ║    → Copy Service ID, Template ID, Public Key into config below     ║
+// ║    → Note: OTP also shows in browser console for testing            ║
+// ╚══════════════════════════════════════════════════════════════════════╝
+
+// ═══════════════════════════════════════════════════════════
+//  FIREBASE CONFIG
+//  ► REPLACE with your own project credentials from:
+//    https://console.firebase.google.com
+//    Project Settings → Your apps → Firebase SDK snippet → Config
+// ═══════════════════════════════════════════════════════════
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyDemoKeyReplaceWithYours123456789",
+  authDomain: "splitease-demo.firebaseapp.com",
+  databaseURL: "https://splitease-demo-default-rtdb.firebaseio.com",
+  projectId: "splitease-demo",
+  storageBucket: "splitease-demo.appspot.com",
+  messagingSenderId: "123456789012",
+  appId: "1:123456789012:web:abcdef1234567890"
+};
+
+// ═══════════════════════════════════════════════════════════
+//  EMAILJS CONFIG (for OTP emails — free tier works fine)
+//  ► Sign up at https://www.emailjs.com
+//  ► Create a service, template, get your keys
+//  ► Template variables: {{to_email}}, {{otp_code}}, {{user_name}}
+// ═══════════════════════════════════════════════════════════
+const EMAILJS_SERVICE_ID  = 'service_splitease';   // ← your EmailJS service ID
+const EMAILJS_TEMPLATE_ID = 'template_otp';        // ← your EmailJS template ID
+const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';     // ← your EmailJS public key
+
+// ─── Firebase init ───────────────────────────────────────
+firebase.initializeApp(FIREBASE_CONFIG);
+const RTDB = firebase.database();
+
+// ─── Safe key encode (email → firebase path safe) ────────
+function fbKey(email){ return email.replace(/\./g,'_dot_').replace(/@/g,'_at_'); }
+function fbKeyDecode(k){ return k.replace(/_dot_/g,'.').replace(/_at_/g,'@'); }
+
+// ═══ FIREBASE DB LAYER ═══════════════════════════════════
+// All reads/writes go to Firebase Realtime Database.
+// localStorage is ONLY used for receipts (base64 images are too large for RTDB free tier)
+// and for caching the session email.
+
 const DB = {
-  getUsers: () => JSON.parse(localStorage.getItem('se_users') || '{}'),
-  saveUsers: u => localStorage.setItem('se_users', JSON.stringify(u)),
-  key: (email, type) => `se_u_${btoa(email)}_${type}`,
-  getData: (email, type) => JSON.parse(localStorage.getItem(DB.key(email, type)) || 'null'),
-  saveData: (email, type, val) => localStorage.setItem(DB.key(email, type), JSON.stringify(val)),
-  getGroups: e => DB.getData(e, 'groups') || [],
-  saveGroups: (e, v) => DB.saveData(e, 'groups', v),
-  getExpenses: e => DB.getData(e, 'expenses') || [],
-  saveExpenses: (e, v) => DB.saveData(e, 'expenses', v),
-  getActivity: e => DB.getData(e, 'activity') || [],
-  saveActivity: (e, v) => DB.saveData(e, 'activity', v),
-  getProfile: e => DB.getData(e, 'profile') || {},
-  saveProfile: (e, v) => DB.saveData(e, 'profile', v),
-  // Receipt stored separately because base64 images are large
+  // ── Users (stored in /users/{fbKey(email)}) ──
+  getUsers: () => {
+    // Returns cached users object (populated by loadAllUsers)
+    return DB._usersCache || {};
+  },
+  _usersCache: null,
+  loadAllUsers: () => new Promise(resolve => {
+    RTDB.ref('users').once('value', snap => {
+      const raw = snap.val() || {};
+      // Decode keys back to emails
+      const decoded = {};
+      Object.keys(raw).forEach(k => { decoded[fbKeyDecode(k)] = raw[k]; });
+      DB._usersCache = decoded;
+      resolve(decoded);
+    });
+  }),
+  getUser: (email) => new Promise(resolve => {
+    RTDB.ref('users/' + fbKey(email)).once('value', snap => resolve(snap.val()));
+  }),
+  saveUser: (email, userData) => {
+    if(!DB._usersCache) DB._usersCache = {};
+    DB._usersCache[email] = userData;
+    return RTDB.ref('users/' + fbKey(email)).set(userData);
+  },
+  saveUsers: (usersObj) => {
+    DB._usersCache = usersObj;
+    const encoded = {};
+    Object.keys(usersObj).forEach(email => { encoded[fbKey(email)] = usersObj[email]; });
+    return RTDB.ref('users').set(encoded);
+  },
+
+  // ── Per-user data (groups, expenses, activity, profile) ──
+  getData: (email, type) => new Promise(resolve => {
+    RTDB.ref('data/' + fbKey(email) + '/' + type).once('value', snap => resolve(snap.val()));
+  }),
+  saveData: (email, type, val) => RTDB.ref('data/' + fbKey(email) + '/' + type).set(val),
+
+  getGroups: (email) => DB._cache[email]?.groups || [],
+  saveGroups: (email, v) => { DB._setCache(email,'groups',v); return DB.saveData(email,'groups',v); },
+  getExpenses: (email) => DB._cache[email]?.expenses || [],
+  saveExpenses: (email, v) => { DB._setCache(email,'expenses',v); return DB.saveData(email,'expenses',v); },
+  getActivity: (email) => DB._cache[email]?.activity || [],
+  saveActivity: (email, v) => { DB._setCache(email,'activity',v); return DB.saveData(email,'activity',v); },
+  getProfile: (email) => DB._cache[email]?.profile || {},
+  saveProfile: (email, v) => { DB._setCache(email,'profile',v); return DB.saveData(email,'profile',v); },
+
+  // Local cache so UI remains synchronous after initial load
+  _cache: {},
+  _setCache: (email, type, val) => { if(!DB._cache[email]) DB._cache[email]={}; DB._cache[email][type]=val; },
+  loadUserData: (email) => new Promise(resolve => {
+    RTDB.ref('data/' + fbKey(email)).once('value', snap => {
+      const d = snap.val() || {};
+      DB._cache[email] = d;
+      resolve(d);
+    });
+  }),
+
+  // ── Receipts — localStorage only (base64 too large for free RTDB) ──
   receiptKey: (email, expId) => `se_r_${btoa(email)}_${expId}`,
   getReceipt: (email, expId) => localStorage.getItem(DB.receiptKey(email, expId)) || null,
   saveReceipt: (email, expId, dataUrl) => { try { localStorage.setItem(DB.receiptKey(email, expId), dataUrl); return true; } catch(e) { return false; } },
   deleteReceipt: (email, expId) => localStorage.removeItem(DB.receiptKey(email, expId)),
-  // Invite tokens: { token -> { groupId, groupOwner(email), createdAt, groupName } }
-  getInvites: () => JSON.parse(localStorage.getItem('se_invites') || '{}'),
-  saveInvites: v => localStorage.setItem('se_invites', JSON.stringify(v)),
+
+  // ── Invite tokens (Firebase) ──
+  getInvites: () => DB._invitesCache || {},
+  _invitesCache: null,
+  loadInvites: () => new Promise(resolve => {
+    RTDB.ref('invites').once('value', snap => { DB._invitesCache = snap.val() || {}; resolve(DB._invitesCache); });
+  }),
+  saveInvites: v => { DB._invitesCache = v; return RTDB.ref('invites').set(v); },
   createInviteToken: (email, groupId, groupName) => {
     const token = Math.random().toString(36).substring(2,9) + Math.random().toString(36).substring(2,9);
     const invites = DB.getInvites();
@@ -1135,15 +1378,48 @@ const DB = {
     DB.saveInvites(invites);
     return token;
   },
-  getInviteByToken: token => { const i = DB.getInvites(); return i[token] || null; },
+  getInviteByToken: token => { return DB.getInvites()[token] || null; },
   revokeInviteForGroup: (email, groupId) => {
     const invites = DB.getInvites();
-    Object.keys(invites).forEach(t => { if(invites[t].groupOwner === email && invites[t].groupId === groupId) delete invites[t]; });
+    Object.keys(invites).forEach(t => { if(invites[t].groupOwner===email && invites[t].groupId===groupId) delete invites[t]; });
     DB.saveInvites(invites);
   },
+
+  // ── Admin settings (Firebase) ──
+  getAdminCfg: () => new Promise(resolve => {
+    RTDB.ref('admin/config').once('value', snap => {
+      resolve(snap.val() || { email:'admin@splitease.com', passHash:'', maintenance:false, registrations:true, invites:true });
+    });
+  }),
+  saveAdminCfg: cfg => RTDB.ref('admin/config').set(cfg),
+  _adminCfgCache: null,
+
+  // ── Ban list (Firebase) ──
+  getBanned: () => DB._bannedCache || [],
+  _bannedCache: null,
+  loadBanned: () => new Promise(resolve => {
+    RTDB.ref('admin/banned').once('value', snap => {
+      DB._bannedCache = snap.val() || [];
+      resolve(DB._bannedCache);
+    });
+  }),
+  saveBanned: b => { DB._bannedCache = b; return RTDB.ref('admin/banned').set(b); },
+
+  // ── Hash util ──
   hash: async str => {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
     return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  },
+
+  // ── Delete user completely ──
+  deleteUserAllData: async (email) => {
+    await RTDB.ref('users/' + fbKey(email)).remove();
+    await RTDB.ref('data/' + fbKey(email)).remove();
+    delete DB._cache[email];
+    if(DB._usersCache) delete DB._usersCache[email];
+    // Remove receipts from localStorage
+    const prefix = `se_r_${btoa(email)}_`;
+    Object.keys(localStorage).filter(k=>k.startsWith(prefix)).forEach(k=>localStorage.removeItem(k));
   }
 };
 
@@ -1161,8 +1437,11 @@ let S = {
 
 // ═══ AUTH ═══
 function showPanel(p) {
-  document.getElementById('login-panel').style.display = p==='login'?'block':'none';
-  document.getElementById('register-panel').style.display = p==='register'?'block':'none';
+  ['login-panel','register-panel','forgot-panel','otp-panel','reset-panel'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.style.display='none';
+  });
+  const show=document.getElementById(p+'-panel')||document.getElementById(p);
+  if(show) show.style.display='block';
   clearErrors();
 }
 function clearErrors() {
@@ -1171,6 +1450,34 @@ function clearErrors() {
 }
 function showErr(id, msg) { const el=document.getElementById(id); if(el){el.style.display='block';el.textContent=msg;} }
 
+// ── Password visibility toggle ──
+function togglePass(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  if(!inp) return;
+  const isPass = inp.type === 'password';
+  inp.type = isPass ? 'text' : 'password';
+  btn.textContent = isPass ? '🙈' : '👁';
+}
+
+// ── Password strength ──
+function checkStrength(val) {
+  const fills = ['strength-fill','strength-fill2'];
+  fills.forEach(id => {
+    const el = document.getElementById(id); if(!el) return;
+    let score = 0;
+    if(val.length >= 6) score++;
+    if(val.length >= 10) score++;
+    if(/[A-Z]/.test(val)) score++;
+    if(/[0-9]/.test(val)) score++;
+    if(/[^A-Za-z0-9]/.test(val)) score++;
+    const pct = (score/5)*100;
+    const color = score<=1?'#ff5e6c':score<=3?'#ffc94d':'#4fffb0';
+    el.style.width = pct+'%';
+    el.style.background = color;
+  });
+}
+
+// ── Register ──
 async function register() {
   clearErrors();
   const name=document.getElementById('reg-name').value.trim();
@@ -1181,32 +1488,61 @@ async function register() {
   if(!email||!email.includes('@')){showErr('reg-email-err','Valid email required');document.getElementById('reg-email').classList.add('input-error');ok=false;}
   if(pass.length<6){showErr('reg-pass-err','Min 6 characters');document.getElementById('reg-pass').classList.add('input-error');ok=false;}
   if(!ok)return;
-  const users=DB.getUsers();
-  if(users[email]){showErr('reg-err','An account with this email already exists.');return;}
-  const passHash=await DB.hash(pass);
-  const initials=name.split(' ').filter(Boolean).map(n=>n[0].toUpperCase()).slice(0,2).join('');
-  users[email]={name,passHash,initials,joined:new Date().toISOString()};
-  DB.saveUsers(users);
-  DB.saveGroups(email,[]);DB.saveExpenses(email,[]);
-  DB.saveActivity(email,[{text:`Welcome to SplitEase, <strong>${name}</strong>! 🎉`,time:now(),color:'#4fffb0'}]);
-  DB.saveProfile(email,{currency:'$',name});
-  toast('✅ Account created! Please sign in.');
-  showPanel('login');
-  document.getElementById('li-email').value=email;
+  setBtnLoading('reg-btn',true,'Creating Account…');
+  try {
+    // Check if email already exists in Firebase
+    const existing = await DB.getUser(email);
+    if(existing){ showErr('reg-err','An account with this email already exists.'); setBtnLoading('reg-btn',false,'Create Account →'); return; }
+    const passHash=await DB.hash(pass);
+    const initials=name.split(' ').filter(Boolean).map(n=>n[0].toUpperCase()).slice(0,2).join('');
+    const userData={name,passHash,initials,joined:new Date().toISOString()};
+    await DB.saveUser(email, userData);
+    await DB.saveData(email,'groups',[]);
+    await DB.saveData(email,'expenses',[]);
+    await DB.saveData(email,'activity',[{text:`Welcome to SplitEase, <strong>${name}</strong>! 🎉`,time:now(),color:'#4fffb0'}]);
+    await DB.saveData(email,'profile',{currency:'$',name});
+    DB._cache[email]={groups:[],expenses:[],activity:[{text:`Welcome to SplitEase, <strong>${name}</strong>! 🎉`,time:now(),color:'#4fffb0'}],profile:{currency:'$',name}};
+    if(!DB._usersCache) DB._usersCache={};
+    DB._usersCache[email]=userData;
+    toast('✅ Account created! Please sign in.');
+    showPanel('login');
+    document.getElementById('li-email').value=email;
+  } catch(err) {
+    showErr('reg-err','Network error. Please check your connection and try again.');
+    console.error(err);
+  }
+  setBtnLoading('reg-btn',false,'Create Account →');
 }
 
+// ── Login ──
 async function login() {
   clearErrors();
   const email=document.getElementById('li-email').value.trim().toLowerCase();
   const pass=document.getElementById('li-pass').value;
-  if(!email){showErr('li-email-err','Email required');return;}
-  if(!pass){showErr('li-pass-err','Password required');return;}
-  const users=DB.getUsers();
-  if(!users[email]){showErr('li-err','No account found with this email.');return;}
-  const passHash=await DB.hash(pass);
-  if(users[email].passHash!==passHash){showErr('li-err','Incorrect password.');return;}
-  sessionStorage.setItem('se_session',email);
-  initApp(email);
+  if(!email){showErr('li-email-err','Email required');document.getElementById('li-email').classList.add('input-error');return;}
+  if(!pass){showErr('li-pass-err','Password required');document.getElementById('li-pass').classList.add('input-error');return;}
+
+  // Check ban (from Firebase cache)
+  const banned = DB.getBanned();
+  if(banned.includes(email)){showErr('li-err','🚫 This account has been suspended. Contact support.');return;}
+
+  setBtnLoading('li-btn',true,'Signing In…');
+  try {
+    const u = await DB.getUser(email);
+    if(!u){ showErr('li-err','No account found with this email.'); setBtnLoading('li-btn',false,'Sign In →'); return; }
+    const passHash=await DB.hash(pass);
+    if(u.passHash!==passHash){ showErr('li-err','Incorrect password.'); setBtnLoading('li-btn',false,'Sign In →'); return; }
+    // Load all user data
+    await DB.loadUserData(email);
+    if(!DB._usersCache) DB._usersCache={};
+    DB._usersCache[email]=u;
+    sessionStorage.setItem('se_session',email);
+    initApp(email,u);
+  } catch(err) {
+    showErr('li-err','Connection error. Please try again.');
+    console.error(err);
+  }
+  setBtnLoading('li-btn',false,'Sign In →');
 }
 
 function logout() {
@@ -1220,42 +1556,159 @@ function logout() {
 
 async function deleteAccount() {
   if(!confirm('Delete your account and ALL data? This cannot be undone.'))return;
-  const users=DB.getUsers();
-  delete users[S.user];
-  DB.saveUsers(users);
-  ['groups','expenses','activity','profile'].forEach(t=>localStorage.removeItem(DB.key(S.user,t)));
-  // Also delete all receipts for this user
-  const prefix = `se_r_${btoa(S.user)}_`;
-  Object.keys(localStorage).filter(k=>k.startsWith(prefix)).forEach(k=>localStorage.removeItem(k));
+  await DB.deleteUserAllData(S.user);
   sessionStorage.removeItem('se_session');
   logout();
+  toast('🗑 Account deleted');
+}
+
+// ── Button loading state ──
+function setBtnLoading(id, loading, txt) {
+  const btn=document.getElementById(id); if(!btn) return;
+  btn.disabled=loading;
+  btn.style.opacity=loading?'0.7':'1';
+  if(txt) btn.textContent=loading?txt:btn.dataset.origTxt||txt;
+  if(!loading && btn.dataset.origTxt) btn.textContent=btn.dataset.origTxt;
+  if(loading && !btn.dataset.origTxt) btn.dataset.origTxt=btn.textContent;
+}
+
+// ═══ FORGOT PASSWORD / OTP ═══
+let OTP_STATE = { code:'', email:'', expiry:0, resendTimer:null };
+
+async function sendOTP() {
+  clearErrors();
+  const email=(document.getElementById('fp-email')?.value||'').trim().toLowerCase();
+  if(!email||!email.includes('@')){ showErr('fp-email-err','Valid email required'); return; }
+  setBtnLoading('fp-btn',true,'Sending OTP…');
+  try {
+    const u = await DB.getUser(email);
+    if(!u){ showErr('fp-err','No account found with this email.'); setBtnLoading('fp-btn',false,'📧 Send OTP →'); return; }
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    OTP_STATE = { code:otp, email, expiry: Date.now() + 10*60*1000, resendTimer:null };
+    // Send via EmailJS
+    try {
+      await emailjs.init(EMAILJS_PUBLIC_KEY);
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email: email,
+        otp_code: otp,
+        user_name: u.name || 'there',
+        app_name: 'SplitEase'
+      });
+      toast('📧 OTP sent! Check your inbox.');
+    } catch(emailErr) {
+      // EmailJS not configured — show OTP in console for testing
+      console.warn('EmailJS not configured. OTP for testing:', otp);
+      toast('⚠️ Email service not configured. OTP: ' + otp + ' (check console)');
+    }
+    document.getElementById('otp-sub').textContent=`We sent a 6-digit code to ${email}`;
+    showPanel('otp');
+    // Clear OTP inputs and focus first
+    document.querySelectorAll('.otp-digit').forEach(d=>{d.value='';d.classList.remove('filled');});
+    setTimeout(()=>{ const d=document.querySelector('.otp-digit'); if(d) d.focus(); },100);
+    startResendTimer();
+  } catch(err) { showErr('fp-err','Connection error. Please try again.'); console.error(err); }
+  setBtnLoading('fp-btn',false,'📧 Send OTP →');
+}
+
+function otpInput(inp, idx) {
+  inp.value = inp.value.replace(/\D/g,'').slice(-1);
+  inp.classList.toggle('filled', inp.value!=='');
+  if(inp.value && idx < 5) {
+    const next=document.querySelectorAll('.otp-digit')[idx+1]; if(next) next.focus();
+  }
+  // Auto-verify when all 6 digits entered
+  const digits=document.querySelectorAll('.otp-digit');
+  const full=[...digits].every(d=>d.value!=='');
+  if(full) setTimeout(verifyOTP, 200);
+}
+function otpKey(e, idx) {
+  if(e.key==='Backspace') {
+    const digits=document.querySelectorAll('.otp-digit');
+    if(!digits[idx].value && idx>0) { digits[idx-1].focus(); digits[idx-1].value=''; digits[idx-1].classList.remove('filled'); }
+  }
+}
+
+function verifyOTP() {
+  const digits=[...document.querySelectorAll('.otp-digit')].map(d=>d.value).join('');
+  if(digits.length<6){ showErr('otp-err','Please enter all 6 digits'); return; }
+  if(Date.now()>OTP_STATE.expiry){ showErr('otp-err','OTP expired. Please request a new one.'); return; }
+  if(digits!==OTP_STATE.code){ showErr('otp-err','Incorrect OTP. Please try again.'); return; }
+  // OTP correct
+  clearErrors();
+  showPanel('reset');
+  document.getElementById('rp-pass').value='';
+  document.getElementById('rp-pass2').value='';
+}
+
+async function resendOTP() {
+  if(OTP_STATE.resendTimerCount>0) return;
+  const fpEmail=document.getElementById('fp-email');
+  if(fpEmail&&OTP_STATE.email) fpEmail.value=OTP_STATE.email;
+  await sendOTP();
+}
+
+let _resendCountdown=0;
+function startResendTimer() {
+  _resendCountdown=60;
+  const link=document.getElementById('resend-link');
+  const timer=document.getElementById('resend-timer');
+  if(link) link.style.opacity='0.4';
+  const interval=setInterval(()=>{
+    _resendCountdown--;
+    if(timer) timer.textContent=`(${_resendCountdown}s)`;
+    if(_resendCountdown<=0){
+      clearInterval(interval);
+      if(timer) timer.textContent='';
+      if(link) link.style.opacity='1';
+    }
+  },1000);
+}
+
+async function resetPassword() {
+  const pass=document.getElementById('rp-pass').value;
+  const pass2=document.getElementById('rp-pass2').value;
+  if(pass.length<6){ showErr('rp-err','Password must be at least 6 characters'); return; }
+  if(pass!==pass2){ showErr('rp-err','Passwords do not match'); return; }
+  setBtnLoading('rp-btn',true,'Saving…');
+  try {
+    const u = await DB.getUser(OTP_STATE.email);
+    if(!u){ showErr('rp-err','User not found.'); setBtnLoading('rp-btn',false,'🔐 Save New Password →'); return; }
+    const passHash = await DB.hash(pass);
+    await DB.saveUser(OTP_STATE.email, {...u, passHash});
+    toast('✅ Password reset successfully! Please sign in.');
+    OTP_STATE={code:'',email:'',expiry:0,resendTimer:null};
+    showPanel('login');
+  } catch(err) { showErr('rp-err','Connection error. Please try again.'); console.error(err); }
+  setBtnLoading('rp-btn',false,'🔐 Save New Password →');
 }
 
 // ═══ INIT APP ═══
-function initApp(email) {
+function initApp(email, u) {
+  if(!u) u = DB._usersCache?.[email] || {};
   S.user=email;
-  const users=DB.getUsers();
-  const u=users[email];
-  S.groups=DB.getGroups(email);S.expenses=DB.getExpenses(email);
-  S.activity=DB.getActivity(email);S.profile=DB.getProfile(email);
+  S.groups=DB.getGroups(email);
+  S.expenses=DB.getExpenses(email);
+  S.activity=DB.getActivity(email);
+  S.profile=DB.getProfile(email);
   S.currency=S.profile.currency||'$';
   const h=new Date().getHours();
   const greet=h<12?'Good morning':h<18?'Good afternoon':'Good evening';
-  const name=u.name.split(' ')[0];
+  const name=(u.name||email).split(' ')[0];
   document.getElementById('welcome-txt').textContent=`${greet}, ${name} 👋`;
-  document.getElementById('topbar-avatar').textContent=u.initials;
+  document.getElementById('topbar-avatar').textContent=u.initials||name[0].toUpperCase();
   document.getElementById('topbar-name').textContent=name;
-  document.getElementById('prof-avatar').textContent=u.initials;
-  document.getElementById('prof-name').textContent=u.name;
+  document.getElementById('prof-avatar').textContent=u.initials||name[0].toUpperCase();
+  document.getElementById('prof-name').textContent=u.name||name;
   document.getElementById('prof-email').textContent=email;
-  document.getElementById('prof-since').textContent=new Date(u.joined).toLocaleDateString('en-US',{month:'long',year:'numeric'});
-  document.getElementById('pf-name').value=S.profile.name||u.name;
+  document.getElementById('prof-since').textContent=new Date(u.joined||Date.now()).toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  document.getElementById('pf-name').value=S.profile.name||u.name||name;
   document.getElementById('pf-currency').value=S.currency;
   const mobAvatar=document.getElementById('mob-avatar');
   const mobUname=document.getElementById('mob-uname');
   const mobUemail=document.getElementById('mob-uemail');
-  if(mobAvatar)mobAvatar.textContent=u.initials;
-  if(mobUname)mobUname.textContent=u.name;
+  if(mobAvatar)mobAvatar.textContent=u.initials||name[0].toUpperCase();
+  if(mobUname)mobUname.textContent=u.name||name;
   if(mobUemail)mobUemail.textContent=email;
   const overlay=document.getElementById('mob-drawer-overlay');
   if(overlay){overlay.style.display='none';overlay.style.opacity='0';}
@@ -1267,10 +1720,34 @@ function initApp(email) {
   checkPendingInviteAfterLogin();
 }
 
-window.addEventListener('load',()=>{
-  checkInviteLink();
-  const session=sessionStorage.getItem('se_session');
-  if(session&&DB.getUsers()[session])initApp(session);
+// ── App startup — connect to Firebase first, then restore session ──
+window.addEventListener('load', async () => {
+  const loadingEl = document.getElementById('db-loading');
+  const loadingTxt = document.getElementById('db-loading-txt');
+  try {
+    loadingTxt.textContent = 'Connecting to database…';
+    // Load shared data needed before login
+    await Promise.all([
+      DB.loadAllUsers(),
+      DB.loadInvites(),
+      DB.loadBanned(),
+    ]);
+    checkInviteLink();
+    const session = sessionStorage.getItem('se_session');
+    if(session && DB._usersCache?.[session]) {
+      loadingTxt.textContent = 'Loading your data…';
+      await DB.loadUserData(session);
+      if(loadingEl) loadingEl.classList.add('hidden');
+      initApp(session, DB._usersCache[session]);
+    } else {
+      if(loadingEl) loadingEl.classList.add('hidden');
+    }
+  } catch(err) {
+    console.error('Firebase connection error:', err);
+    if(loadingTxt) loadingTxt.textContent = '⚠️ Could not connect to database. Check Firebase config.';
+    // Show error but let user see auth screen
+    setTimeout(()=>{ if(loadingEl) loadingEl.classList.add('hidden'); }, 3000);
+  }
 });
 
 // ═══ RENDER ═══
@@ -2029,20 +2506,21 @@ function confirmSettle() {
 }
 
 // ═══ PROFILE ═══
-function saveProfile() {
+async function saveProfile() {
   const name=document.getElementById('pf-name').value.trim();
   const currency=document.getElementById('pf-currency').value;
   if(!name)return toast('⚠️ Name cannot be empty');
   S.profile={...S.profile,name,currency};S.currency=currency;
   DB.saveProfile(S.user,S.profile);
-  const users=DB.getUsers();
-  users[S.user].name=name;
-  users[S.user].initials=name.split(' ').filter(Boolean).map(n=>n[0].toUpperCase()).slice(0,2).join('');
-  DB.saveUsers(users);
+  const u=DB._usersCache?.[S.user]||{};
+  const initials=name.split(' ').filter(Boolean).map(n=>n[0].toUpperCase()).slice(0,2).join('');
+  const updated={...u,name,initials};
+  if(DB._usersCache) DB._usersCache[S.user]=updated;
+  DB.saveUser(S.user,updated);
   document.getElementById('prof-name').textContent=name;
   document.getElementById('topbar-name').textContent=name.split(' ')[0];
-  document.getElementById('topbar-avatar').textContent=users[S.user].initials;
-  document.getElementById('prof-avatar').textContent=users[S.user].initials;
+  document.getElementById('topbar-avatar').textContent=initials;
+  document.getElementById('prof-avatar').textContent=initials;
   renderAll();toast('✅ Profile saved!');
 }
 
@@ -2318,27 +2796,32 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 //  on first login via Settings tab
 // ═══════════════════════════════════════════════
 
-const ADM_CFG_KEY  = 'se_admin_cfg';
-const ADM_AUDIT_KEY = 'se_admin_audit';
-const ADM_BC_KEY    = 'se_admin_bc';
-const ADM_BAN_KEY   = 'se_banned';
+// ADM_CFG_KEY removed — config now in Firebase
+const ADM_AUDIT_KEY = 'se_admin_audit'; // stored in Firebase
+const ADM_BC_KEY    = 'se_admin_bc'; // stored in Firebase
+// ADM_BAN_KEY removed — ban list now in Firebase
 
 // ── Config helpers ──
-function admCfg() {
-  const defaults = { email:'admin@splitease.com', passHash:'', maintenance:false, registrations:true, invites:true };
-  return Object.assign(defaults, JSON.parse(localStorage.getItem(ADM_CFG_KEY)||'{}'));
-}
-function saveAdmCfg(c){ localStorage.setItem(ADM_CFG_KEY, JSON.stringify(c)); }
+// admCfg/saveAdmCfg defined in Firebase section above
 
-// Seed default password hash ('Admin@2024') on first load
-(async()=>{
-  const c = admCfg();
-  if(!c.passHash){
-    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('Admin@2024'));
-    c.passHash = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-    saveAdmCfg(c);
-  }
-})();
+// Admin config loaded from Firebase via loadAdmCfg()
+
+
+// ── Admin Config (Firebase-backed) ──
+let _admCfgCache = { email:'admin@splitease.com', passHash:'', maintenance:false, registrations:true, invites:true };
+async function loadAdmCfg() {
+  try {
+    const cfg = await DB.getAdminCfg();
+    if(cfg) _admCfgCache = cfg;
+    if(!_admCfgCache.passHash){
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('Admin@2024'));
+      _admCfgCache.passHash = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+      await DB.saveAdminCfg(_admCfgCache);
+    }
+  } catch(e){ console.warn('Could not load admin config', e); }
+}
+function admCfg() { return _admCfgCache; }
+function saveAdmCfg(c){ _admCfgCache = c; DB.saveAdminCfg(c); }
 
 // ── Audit log ──
 function admAudit(action, detail=''){
@@ -2354,17 +2837,18 @@ function clearAuditLog(){
 }
 
 // ── Ban helpers ──
-function getBanned(){ return JSON.parse(localStorage.getItem(ADM_BAN_KEY)||'[]'); }
-function saveBanned(b){ localStorage.setItem(ADM_BAN_KEY, JSON.stringify(b)); }
+function getBanned(){ return DB.getBanned(); }
+function saveBanned(b){ DB.saveBanned(b); }
 
 // ── State ──
 let ADM = { on:false, page:'overview', uPage:0, uPer:10 };
 
 // ── Open admin panel ──
-function openAdminPanel(){
+async function openAdminPanel(){
   document.getElementById('auth-screen').classList.remove('active');
   document.getElementById('app-screen').classList.remove('active');
   document.getElementById('admin-screen').classList.add('active');
+  await loadAdmCfg();
   if(ADM.on){ showAdminApp(); } else { showAdminLogin(); }
 }
 
@@ -2373,9 +2857,13 @@ function showAdminLogin(){
   document.getElementById('admin-app-view').style.display='none';
   document.getElementById('adm-err').textContent='';
 }
-function showAdminApp(){
+async function showAdminApp(){
   document.getElementById('admin-login-view').style.display='none';
   document.getElementById('admin-app-view').style.display='flex';
+  // Reload fresh data from Firebase
+  await DB.loadAllUsers();
+  await DB.loadBanned();
+  await DB.loadInvites();
   const cfg=admCfg();
   document.getElementById('adm-topbar-email').textContent=cfg.email;
   const t=new Date();
@@ -2402,6 +2890,7 @@ async function adminLogin(){
   const errEl = document.getElementById('adm-err');
   errEl.textContent='';
   if(!email||!pass){ errEl.textContent='Please fill in both fields'; return; }
+  await loadAdmCfg();
   const cfg = admCfg();
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pass));
   const hash = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
@@ -2449,14 +2938,17 @@ function renderAdminOverview(){
   const users = DB.getUsers();
   const emails = Object.keys(users);
   let totalGrp=0, totalExp=0, totalSpent=0;
-  emails.forEach(e=>{
-    totalGrp+=DB.getGroups(e).length;
-    const exps=DB.getExpenses(e);
-    totalExp+=exps.length;
-    totalSpent+=exps.reduce((s,x)=>s+x.amount,0);
-  });
+  // Load fresh data for all users for accurate stats
   const invites=Object.keys(DB.getInvites()).length;
   const banned=getBanned().length;
+  totalGrp=0;totalExp=0;totalSpent=0;
+  emails.forEach(e=>{
+    // Use cached data - requires user to have logged in to be counted in detail
+    const exps=DB.getExpenses(e)||[];
+    totalGrp+=(DB.getGroups(e)||[]).length;
+    totalExp+=exps.length;
+    totalSpent+=exps.reduce((s,x)=>s+(x.amount||0),0);
+  });
   document.getElementById('adm-overview-sub').textContent='Last updated '+new Date().toLocaleString();
 
   const stats=[
@@ -2607,15 +3099,13 @@ function admUnban(email){
   saveBanned(getBanned().filter(e=>e!==email));
   admAudit('UNBAN_USER',email); renderAdminUsers(); toast(`✅ ${email} unbanned`);
 }
-function admDeleteUser(email){
-  if(!confirm(`Permanently delete ${email} and ALL their data? This cannot be undone.`))return;
-  const users=DB.getUsers(); delete users[email]; DB.saveUsers(users);
-  ['groups','expenses','activity','profile'].forEach(t=>localStorage.removeItem(DB.key(email,t)));
-  const pre=`se_r_${btoa(email)}_`;
-  Object.keys(localStorage).filter(k=>k.startsWith(pre)).forEach(k=>localStorage.removeItem(k));
+async function admDeleteUser(email){
+  if(!confirm("Permanently delete "+email+" and ALL their data?"))return;
+  await DB.deleteUserAllData(email);
   saveBanned(getBanned().filter(e=>e!==email));
-  admAudit('DELETE_USER',email); renderAdminUsers(); renderAdminOverview();
-  toast(`🗑 ${email} deleted`);
+  await DB.loadAllUsers();
+  admAudit("DELETE_USER",email); renderAdminUsers(); renderAdminOverview();
+  toast("Deleted "+email);
 }
 function admImpersonate(email){
   if(!DB.getUsers()[email])return toast('User not found');
@@ -2664,9 +3154,10 @@ function renderAdminGroups(){
       <td class="adm-td"><button class="adm-btn red" onclick="admDeleteGroup('${esc(g.ownerEmail)}',${g.id},'${esc(g.name)}')">🗑 Delete</button></td>
     </tr>`).join('')||`<tr><td colspan="6" style="padding:32px;text-align:center;color:var(--muted)">No groups found</td></tr>`;
 }
-function admDeleteGroup(ownerEmail,groupId,name){
+async function admDeleteGroup(ownerEmail,groupId,name){
   if(!confirm(`Delete group "${name}"?`))return;
-  DB.saveGroups(ownerEmail,DB.getGroups(ownerEmail).filter(g=>g.id!==groupId));
+  const grps=DB.getGroups(ownerEmail).filter(g=>g.id!==groupId);
+  await DB.saveGroups(ownerEmail,grps);
   admAudit('DELETE_GROUP',`${name} (${ownerEmail})`);
   renderAdminGroups(); renderAdminOverview(); toast('🗑 Group deleted');
 }
@@ -2745,12 +3236,13 @@ async function saveAdminCreds(){
   const email=(document.getElementById('st-adm-email')?.value||'').trim().toLowerCase();
   const pass=document.getElementById('st-adm-pass')?.value||'';
   if(!email)return toast('⚠️ Email required');
-  const cfg=admCfg(); cfg.email=email;
+  const cfg={...admCfg(), email};
   if(pass){
     const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pass));
     cfg.passHash=Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
   }
   saveAdmCfg(cfg);
+  await DB.saveAdminCfg(cfg);
   if(document.getElementById('st-adm-pass')) document.getElementById('st-adm-pass').value='';
   document.getElementById('adm-topbar-email').textContent=email;
   admAudit('UPDATE_CREDENTIALS',email); toast('✅ Admin credentials updated!');
@@ -3129,6 +3621,13 @@ window.goTo = function(page){
     </div>
     <div id="adm-modal-body"></div>
   </div>
+</div>
+
+
+<!-- DB Loading Overlay -->
+<div id="db-loading">
+  <div class="db-spinner"></div>
+  <div class="db-loading-txt" id="db-loading-txt">Connecting to database…</div>
 </div>
 
 </body>
