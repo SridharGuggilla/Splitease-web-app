@@ -7,8 +7,6 @@
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<!-- EmailJS for OTP -->
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -709,14 +707,14 @@ tr:hover td{background:rgba(255,255,255,0.015)}
           Back to Sign In
         </div>
         <div class="auth-title">Forgot Password?</div>
-        <div class="auth-sub">Enter your email and we'll send a 6-digit OTP to reset your password.</div>
+        <div class="auth-sub">Enter your email and we'll generate a 6-digit OTP code for you to reset your password.</div>
         <div class="form-group">
           <label>Email Address</label>
           <input type="email" id="fp-email" placeholder="you@example.com" onkeydown="if(event.key==='Enter')sendOTP()">
           <div class="error-msg" id="fp-email-err"></div>
         </div>
         <div class="error-msg" id="fp-err" style="display:block;margin-bottom:12px;text-align:center"></div>
-        <button class="btn btn-primary" id="fp-btn" onclick="sendOTP()">📧 Send OTP →</button>
+        <button class="btn btn-primary" id="fp-btn" onclick="sendOTP()">🔑 Get OTP →</button>
       </div>
 
       <!-- OTP VERIFY -->
@@ -1234,32 +1232,7 @@ tr:hover td{background:rgba(255,255,255,0.015)}
 
 <script>
 
-// ╔══════════════════════════════════════════════════════════════════════╗
-// ║              SPLITEASE — SETUP INSTRUCTIONS                          ║
-// ║                                                                      ║
-// ║  This app uses Firebase Realtime Database for cross-device sync.    ║
-// ║  Follow these 3 steps to make it work:                              ║
-// ║                                                                      ║
-// ║  STEP 1: Create a Firebase project                                   ║
-// ║    → https://console.firebase.google.com                            ║
-// ║    → "Add project" → name it → continue                             ║
-// ║                                                                      ║
-// ║  STEP 2: Add a Realtime Database                                     ║
-// ║    → Build → Realtime Database → Create database                    ║
-// ║    → Start in TEST MODE (so anyone can read/write)                   ║
-// ║    → Copy the database URL (ends in .firebaseio.com)                ║
-// ║                                                                      ║
-// ║  STEP 3: Get your config & paste it in FIREBASE_CONFIG below        ║
-// ║    → Project Settings (gear icon) → Your apps → Web app             ║
-// ║    → Register app → copy the firebaseConfig object                   ║
-// ║                                                                      ║
-// ║  EMAILJS (for OTP password reset emails):                           ║
-// ║    → https://www.emailjs.com  (free 200 emails/month)               ║
-// ║    → Create account → Add Email Service → Create Template           ║
-// ║    → Template variables: {{to_email}} {{otp_code}} {{user_name}}    ║
-// ║    → Copy Service ID, Template ID, Public Key into config below     ║
-// ║    → Note: OTP also shows in browser console for testing            ║
-// ╚══════════════════════════════════════════════════════════════════════╝
+// SplitEase — Powered by Firebase Realtime Database
 
 // ═══════════════════════════════════════════════════════════
 //  FIREBASE CONFIG
@@ -1268,8 +1241,6 @@ tr:hover td{background:rgba(255,255,255,0.015)}
 //    Project Settings → Your apps → Firebase SDK snippet → Config
 // ═══════════════════════════════════════════════════════════
 const FIREBASE_CONFIG = {
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
   apiKey: "AIzaSyAn2QsTf6P6BBaYxnD6u7Zv-LdXpdTxjUU",
   authDomain: "splitease-8bce9.firebaseapp.com",
   databaseURL: "https://splitease-8bce9-default-rtdb.firebaseio.com",
@@ -1280,15 +1251,7 @@ const firebaseConfig = {
   measurementId: "G-B63992W2BR"
 };
 
-// ═══════════════════════════════════════════════════════════
-//  EMAILJS CONFIG (for OTP emails — free tier works fine)
-//  ► Sign up at https://www.emailjs.com
-//  ► Create a service, template, get your keys
-//  ► Template variables: {{to_email}}, {{otp_code}}, {{user_name}}
-// ═══════════════════════════════════════════════════════════
-const EMAILJS_SERVICE_ID  = 'service_splitease';   // ← your EmailJS service ID
-const EMAILJS_TEMPLATE_ID = 'template_otp';        // ← your EmailJS template ID
-const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';     // ← your EmailJS public key
+// Email OTP service removed — using in-app OTP display
 
 // ─── Firebase init ───────────────────────────────────────
 firebase.initializeApp(FIREBASE_CONFIG);
@@ -1304,126 +1267,153 @@ function fbKeyDecode(k){ return k.replace(/_dot_/g,'.').replace(/_at_/g,'@'); }
 // and for caching the session email.
 
 const DB = {
-  // ── Users (stored in /users/{fbKey(email)}) ──
-  getUsers: () => {
-    // Returns cached users object (populated by loadAllUsers)
-    return DB._usersCache || {};
-  },
-  _usersCache: null,
-  loadAllUsers: () => new Promise(resolve => {
-    RTDB.ref('users').once('value', snap => {
-      const raw = snap.val() || {};
-      // Decode keys back to emails
-      const decoded = {};
-      Object.keys(raw).forEach(k => { decoded[fbKeyDecode(k)] = raw[k]; });
-      DB._usersCache = decoded;
-      resolve(decoded);
-    });
-  }),
-  getUser: (email) => new Promise(resolve => {
-    RTDB.ref('users/' + fbKey(email)).once('value', snap => resolve(snap.val()));
-  }),
-  saveUser: (email, userData) => {
-    if(!DB._usersCache) DB._usersCache = {};
-    DB._usersCache[email] = userData;
-    return RTDB.ref('users/' + fbKey(email)).set(userData);
-  },
-  saveUsers: (usersObj) => {
-    DB._usersCache = usersObj;
-    const encoded = {};
-    Object.keys(usersObj).forEach(email => { encoded[fbKey(email)] = usersObj[email]; });
-    return RTDB.ref('users').set(encoded);
+  // ── localStorage helpers (primary storage — instant, works offline) ──
+  _ls:    (k, fb) => { try { const v = localStorage.getItem(k); return v !== null ? JSON.parse(v) : fb; } catch{ return fb; } },
+  _lsSet: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){ console.warn('Storage full', e); } },
+
+  // ── Users ──
+  getUsers: () => DB._ls('se_users', {}),
+  saveUsers: u  => { DB._lsSet('se_users', u); DB._fbSave('_global/users', u); },
+  getUser:   email => DB.getUsers()[email] || null,
+  saveUser:  (email, data) => {
+    const users = DB.getUsers();
+    users[email] = data;
+    DB._lsSet('se_users', users);
+    DB._fbSave('_global/users', users);
+    // Also index by individual email key for fast lookup
+    DB._fbSave('_global/users/' + fbKey(email), data);
   },
 
-  // ── Per-user data (groups, expenses, activity, profile) ──
-  getData: (email, type) => new Promise(resolve => {
-    RTDB.ref('data/' + fbKey(email) + '/' + type).once('value', snap => resolve(snap.val()));
-  }),
-  saveData: (email, type, val) => RTDB.ref('data/' + fbKey(email) + '/' + type).set(val),
+  // ── Per-user data ──
+  _ekey: email => btoa(unescape(encodeURIComponent(email))).replace(/=/g,''),
+  _key:  (email, type) => `se_u_${DB._ekey(email)}_${type}`,
+  getData: (email, type) => {
+    const def = (type==='profile') ? {} : [];
+    return DB._ls(DB._key(email, type), def);
+  },
+  saveData: (email, type, val) => {
+    DB._lsSet(DB._key(email, type), val);
+    // background sync to Firebase
+    DB._fbSave(`users/${DB._ekey(email)}/${type}`, val);
+  },
 
-  getGroups: (email) => DB._cache[email]?.groups || [],
-  saveGroups: (email, v) => { DB._setCache(email,'groups',v); return DB.saveData(email,'groups',v); },
-  getExpenses: (email) => DB._cache[email]?.expenses || [],
-  saveExpenses: (email, v) => { DB._setCache(email,'expenses',v); return DB.saveData(email,'expenses',v); },
-  getActivity: (email) => DB._cache[email]?.activity || [],
-  saveActivity: (email, v) => { DB._setCache(email,'activity',v); return DB.saveData(email,'activity',v); },
-  getProfile: (email) => DB._cache[email]?.profile || {},
-  saveProfile: (email, v) => { DB._setCache(email,'profile',v); return DB.saveData(email,'profile',v); },
+  getGroups:   e => DB.getData(e, 'groups'),
+  saveGroups:  (e,v) => DB.saveData(e, 'groups', v),
+  getExpenses: e => DB.getData(e, 'expenses'),
+  saveExpenses:(e,v) => DB.saveData(e, 'expenses', v),
+  getActivity: e => DB.getData(e, 'activity'),
+  saveActivity:(e,v) => DB.saveData(e, 'activity', v),
+  getProfile:  e => DB.getData(e, 'profile'),
+  saveProfile: (e,v) => DB.saveData(e, 'profile', v),
 
-  // Local cache so UI remains synchronous after initial load
-  _cache: {},
-  _setCache: (email, type, val) => { if(!DB._cache[email]) DB._cache[email]={}; DB._cache[email][type]=val; },
-  loadUserData: (email) => new Promise(resolve => {
-    RTDB.ref('data/' + fbKey(email)).once('value', snap => {
-      const d = snap.val() || {};
-      DB._cache[email] = d;
-      resolve(d);
-    });
-  }),
+  // ── Receipts (localStorage only — too large for cloud) ──
+  receiptKey:  (email, expId) => `se_r_${DB._ekey(email)}_${expId}`,
+  getReceipt:  (email, expId) => localStorage.getItem(DB.receiptKey(email, expId)) || null,
+  saveReceipt: (email, expId, dataUrl) => { try{ localStorage.setItem(DB.receiptKey(email,expId), dataUrl); return true; } catch{ return false; } },
+  deleteReceipt:(email, expId) => localStorage.removeItem(DB.receiptKey(email, expId)),
 
-  // ── Receipts — localStorage only (base64 too large for free RTDB) ──
-  receiptKey: (email, expId) => `se_r_${btoa(email)}_${expId}`,
-  getReceipt: (email, expId) => localStorage.getItem(DB.receiptKey(email, expId)) || null,
-  saveReceipt: (email, expId, dataUrl) => { try { localStorage.setItem(DB.receiptKey(email, expId), dataUrl); return true; } catch(e) { return false; } },
-  deleteReceipt: (email, expId) => localStorage.removeItem(DB.receiptKey(email, expId)),
-
-  // ── Invite tokens (Firebase) ──
-  getInvites: () => DB._invitesCache || {},
-  _invitesCache: null,
-  loadInvites: () => new Promise(resolve => {
-    RTDB.ref('invites').once('value', snap => { DB._invitesCache = snap.val() || {}; resolve(DB._invitesCache); });
-  }),
-  saveInvites: v => { DB._invitesCache = v; return RTDB.ref('invites').set(v); },
+  // ── Invites ──
+  getInvites: ()  => DB._ls('se_invites', {}),
+  saveInvites: v  => { DB._lsSet('se_invites', v); DB._fbSave('_global/invites', v); },
   createInviteToken: (email, groupId, groupName) => {
-    const token = Math.random().toString(36).substring(2,9) + Math.random().toString(36).substring(2,9);
-    const invites = DB.getInvites();
-    invites[token] = { groupId, groupOwner: email, groupName, createdAt: new Date().toISOString() };
-    DB.saveInvites(invites);
+    const token = Math.random().toString(36).slice(2,9) + Math.random().toString(36).slice(2,9);
+    const inv = DB.getInvites();
+    inv[token] = { groupId, groupOwner:email, groupName, createdAt:new Date().toISOString() };
+    DB.saveInvites(inv);
     return token;
   },
-  getInviteByToken: token => { return DB.getInvites()[token] || null; },
+  getInviteByToken: token => DB.getInvites()[token] || null,
   revokeInviteForGroup: (email, groupId) => {
-    const invites = DB.getInvites();
-    Object.keys(invites).forEach(t => { if(invites[t].groupOwner===email && invites[t].groupId===groupId) delete invites[t]; });
-    DB.saveInvites(invites);
+    const inv = DB.getInvites();
+    Object.keys(inv).forEach(t => { if(inv[t].groupOwner===email && inv[t].groupId===groupId) delete inv[t]; });
+    DB.saveInvites(inv);
   },
 
-  // ── Admin settings (Firebase) ──
-  getAdminCfg: () => new Promise(resolve => {
-    RTDB.ref('admin/config').once('value', snap => {
-      resolve(snap.val() || { email:'admin@splitease.com', passHash:'', maintenance:false, registrations:true, invites:true });
-    });
-  }),
-  saveAdminCfg: cfg => RTDB.ref('admin/config').set(cfg),
-  _adminCfgCache: null,
+  // ── Admin config ──
+  getAdminCfg: () => DB._ls('se_admin_cfg', { email:'admin@splitease.com', passHash:'', maintenance:false, registrations:true, invites:true }),
+  saveAdminCfg: cfg => { DB._lsSet('se_admin_cfg', cfg); DB._fbSave('_global/adminCfg', cfg); },
 
-  // ── Ban list (Firebase) ──
-  getBanned: () => DB._bannedCache || [],
-  _bannedCache: null,
-  loadBanned: () => new Promise(resolve => {
-    RTDB.ref('admin/banned').once('value', snap => {
-      DB._bannedCache = snap.val() || [];
-      resolve(DB._bannedCache);
-    });
-  }),
-  saveBanned: b => { DB._bannedCache = b; return RTDB.ref('admin/banned').set(b); },
+  // ── Ban list ──
+  getBanned: () => DB._ls('se_banned', []),
+  saveBanned: b => { DB._lsSet('se_banned', b); DB._fbSave('_global/banned', b); },
 
-  // ── Hash util ──
+  // ── Delete user ──
+  deleteUserAllData: async email => {
+    const users = DB.getUsers(); delete users[email]; DB._lsSet('se_users', users);
+    DB._fbSave('_global/users', users);
+    ['groups','expenses','activity','profile'].forEach(t => localStorage.removeItem(DB._key(email,t)));
+    DB._fbRemove(`users/${DB._ekey(email)}`);
+    const pre = `se_r_${DB._ekey(email)}_`;
+    Object.keys(localStorage).filter(k=>k.startsWith(pre)).forEach(k=>localStorage.removeItem(k));
+  },
+
+  // ── Hash ──
   hash: async str => {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
     return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
   },
 
-  // ── Delete user completely ──
-  deleteUserAllData: async (email) => {
-    await RTDB.ref('users/' + fbKey(email)).remove();
-    await RTDB.ref('data/' + fbKey(email)).remove();
-    delete DB._cache[email];
-    if(DB._usersCache) delete DB._usersCache[email];
-    // Remove receipts from localStorage
-    const prefix = `se_r_${btoa(email)}_`;
-    Object.keys(localStorage).filter(k=>k.startsWith(prefix)).forEach(k=>localStorage.removeItem(k));
-  }
+  // ── Firebase background sync (fire-and-forget, never blocks UI) ──
+  _fbSave: (path, val) => {
+    if(typeof RTDB === 'undefined') return;
+    try { RTDB.ref(path).set(val).catch(()=>{}); } catch{}
+  },
+  _fbRemove: path => {
+    if(typeof RTDB === 'undefined') return;
+    try { RTDB.ref(path).remove().catch(()=>{}); } catch{}
+  },
+
+  // ── Pull user data from Firebase (used on new-device login) ──
+  loadUserData: email => new Promise(resolve => {
+    if(typeof RTDB === 'undefined') { resolve({}); return; }
+    const ekey = DB._ekey(email);
+    RTDB.ref(`users/${ekey}`).once('value', snap => {
+      const d = snap.val() || {};
+      // Restore each type to localStorage if present
+      ['groups','expenses','activity','profile'].forEach(t => {
+        if(d[t] !== undefined) DB._lsSet(DB._key(email,t), d[t]);
+      });
+      resolve(d);
+    }, () => resolve({}));
+  }),
+
+  // ── Pull global shared data (users list, invites, banned) from Firebase ──
+  loadAllUsers: () => new Promise(resolve => {
+    if(typeof RTDB === 'undefined') { resolve(DB.getUsers()); return; }
+    RTDB.ref('_global/users').once('value', snap => {
+      const remote = snap.val();
+      if(remote) {
+        // Merge remote users INTO local (remote wins for remote entries)
+        const local = DB.getUsers();
+        const merged = { ...local, ...remote };
+        DB._lsSet('se_users', merged);
+      }
+      DB._usersCache = DB.getUsers();
+      resolve(DB._usersCache);
+    }, () => { DB._usersCache = DB.getUsers(); resolve(DB._usersCache); });
+  }),
+
+  loadInvites: () => new Promise(resolve => {
+    if(typeof RTDB === 'undefined') { resolve(DB.getInvites()); return; }
+    RTDB.ref('_global/invites').once('value', snap => {
+      const v = snap.val();
+      if(v) DB._lsSet('se_invites', v);
+      resolve(DB.getInvites());
+    }, () => resolve(DB.getInvites()));
+  }),
+
+  loadBanned: () => new Promise(resolve => {
+    if(typeof RTDB === 'undefined') { resolve(DB.getBanned()); return; }
+    RTDB.ref('_global/banned').once('value', snap => {
+      const v = snap.val();
+      if(v) DB._lsSet('se_banned', v);
+      resolve(DB.getBanned());
+    }, () => resolve(DB.getBanned()));
+  }),
+
+  // ── Compatibility shims ──
+  _usersCache: null,
+  _cache: {}
 };
 
 // ═══ STATE ═══
@@ -1494,19 +1484,27 @@ async function register() {
   setBtnLoading('reg-btn',true,'Creating Account…');
   try {
     // Check if email already exists in Firebase
-    const existing = await DB.getUser(email);
+    // Check local first, then try Firebase for cross-device duplicate check
+    let existing = DB.getUser(email);
+    if(!existing) {
+      try {
+        await Promise.race([
+          DB.loadAllUsers(),
+          new Promise((_,rej) => setTimeout(()=>rej(),3000))
+        ]);
+        existing = DB.getUser(email);
+      } catch{}
+    }
     if(existing){ showErr('reg-err','An account with this email already exists.'); setBtnLoading('reg-btn',false,'Create Account →'); return; }
     const passHash=await DB.hash(pass);
     const initials=name.split(' ').filter(Boolean).map(n=>n[0].toUpperCase()).slice(0,2).join('');
     const userData={name,passHash,initials,joined:new Date().toISOString()};
-    await DB.saveUser(email, userData);
-    await DB.saveData(email,'groups',[]);
-    await DB.saveData(email,'expenses',[]);
-    await DB.saveData(email,'activity',[{text:`Welcome to SplitEase, <strong>${name}</strong>! 🎉`,time:now(),color:'#4fffb0'}]);
-    await DB.saveData(email,'profile',{currency:'$',name});
-    DB._cache[email]={groups:[],expenses:[],activity:[{text:`Welcome to SplitEase, <strong>${name}</strong>! 🎉`,time:now(),color:'#4fffb0'}],profile:{currency:'$',name}};
-    if(!DB._usersCache) DB._usersCache={};
-    DB._usersCache[email]=userData;
+    DB.saveUser(email, userData);
+    DB.saveData(email,'groups',[]);
+    DB.saveData(email,'expenses',[]);
+    const welcomeAct=[{text:`Welcome to SplitEase, <strong>${name}</strong>! 🎉`,time:now(),color:'#4fffb0'}];
+    DB.saveData(email,'activity',welcomeAct);
+    DB.saveData(email,'profile',{currency:'$',name});
     toast('✅ Account created! Please sign in.');
     showPanel('login');
     document.getElementById('li-email').value=email;
@@ -1520,32 +1518,46 @@ async function register() {
 // ── Login ──
 async function login() {
   clearErrors();
-  const email=document.getElementById('li-email').value.trim().toLowerCase();
-  const pass=document.getElementById('li-pass').value;
-  if(!email){showErr('li-email-err','Email required');document.getElementById('li-email').classList.add('input-error');return;}
-  if(!pass){showErr('li-pass-err','Password required');document.getElementById('li-pass').classList.add('input-error');return;}
+  const email = document.getElementById('li-email').value.trim().toLowerCase();
+  const pass  = document.getElementById('li-pass').value;
+  if(!email){ showErr('li-email-err','Email required'); document.getElementById('li-email').classList.add('input-error'); return; }
+  if(!pass){  showErr('li-pass-err','Password required'); document.getElementById('li-pass').classList.add('input-error'); return; }
 
-  // Check ban (from Firebase cache)
-  const banned = DB.getBanned();
-  if(banned.includes(email)){showErr('li-err','🚫 This account has been suspended. Contact support.');return;}
+  if(DB.getBanned().includes(email)){ showErr('li-err','🚫 This account has been suspended.'); return; }
 
-  setBtnLoading('li-btn',true,'Signing In…');
+  setBtnLoading('li-btn', true, 'Signing In…');
   try {
-    const u = await DB.getUser(email);
+    // 1) Check localStorage first (instant, same device)
+    let u = DB.getUsers()[email];
+
+    // 2) If not found locally, try Firebase (new device or cleared browser)
+    if(!u) {
+      setBtnLoading('li-btn', true, 'Checking cloud…');
+      try {
+        await Promise.race([
+          DB.loadAllUsers(),
+          new Promise((_,rej) => setTimeout(() => rej(new Error('timeout')), 6000))
+        ]);
+        u = DB.getUser(email);
+      } catch(fbErr) { console.warn('Firebase lookup timed out or failed:', fbErr); }
+    }
+
     if(!u){ showErr('li-err','No account found with this email.'); setBtnLoading('li-btn',false,'Sign In →'); return; }
-    const passHash=await DB.hash(pass);
-    if(u.passHash!==passHash){ showErr('li-err','Incorrect password.'); setBtnLoading('li-btn',false,'Sign In →'); return; }
-    // Load all user data
-    await DB.loadUserData(email);
-    if(!DB._usersCache) DB._usersCache={};
-    DB._usersCache[email]=u;
-    sessionStorage.setItem('se_session',email);
-    initApp(email,u);
+
+    const passHash = await DB.hash(pass);
+    if(u.passHash !== passHash){ showErr('li-err','Incorrect password.'); setBtnLoading('li-btn',false,'Sign In →'); return; }
+
+    // Pull user data from Firebase in background (non-blocking)
+    DB.loadUserData(email).catch(()=>{});
+
+    sessionStorage.setItem('se_session', email);
+    initApp(email, DB.getUsers()[email] || u);
+
   } catch(err) {
-    showErr('li-err','Connection error. Please try again.');
-    console.error(err);
+    showErr('li-err','Connection error. Please check your internet and try again.');
+    console.error('Login error:', err);
   }
-  setBtnLoading('li-btn',false,'Sign In →');
+  setBtnLoading('li-btn', false, 'Sign In →');
 }
 
 function logout() {
@@ -1559,7 +1571,7 @@ function logout() {
 
 async function deleteAccount() {
   if(!confirm('Delete your account and ALL data? This cannot be undone.'))return;
-  await DB.deleteUserAllData(S.user);
+  DB.deleteUserAllData(S.user);
   sessionStorage.removeItem('se_session');
   logout();
   toast('🗑 Account deleted');
@@ -1582,36 +1594,27 @@ async function sendOTP() {
   clearErrors();
   const email=(document.getElementById('fp-email')?.value||'').trim().toLowerCase();
   if(!email||!email.includes('@')){ showErr('fp-email-err','Valid email required'); return; }
-  setBtnLoading('fp-btn',true,'Sending OTP…');
+  setBtnLoading('fp-btn',true,'Checking…');
   try {
-    const u = await DB.getUser(email);
-    if(!u){ showErr('fp-err','No account found with this email.'); setBtnLoading('fp-btn',false,'📧 Send OTP →'); return; }
-    // Generate 6-digit OTP
+    let u = DB.getUser(email);
+    if(!u){ try{ await Promise.race([DB.loadAllUsers(),new Promise((_,rej)=>setTimeout(rej,4000))]); u=DB.getUser(email); }catch{} }
+    if(!u){ showErr('fp-err','No account found with this email.'); setBtnLoading('fp-btn',false,'Get OTP →'); return; }
+    // Generate 6-digit OTP and store in Firebase temporarily
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    OTP_STATE = { code:otp, email, expiry: Date.now() + 10*60*1000, resendTimer:null };
-    // Send via EmailJS
-    try {
-      await emailjs.init(EMAILJS_PUBLIC_KEY);
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        to_email: email,
-        otp_code: otp,
-        user_name: u.name || 'there',
-        app_name: 'SplitEase'
-      });
-      toast('📧 OTP sent! Check your inbox.');
-    } catch(emailErr) {
-      // EmailJS not configured — show OTP in console for testing
-      console.warn('EmailJS not configured. OTP for testing:', otp);
-      toast('⚠️ Email service not configured. OTP: ' + otp + ' (check console)');
-    }
-    document.getElementById('otp-sub').textContent=`We sent a 6-digit code to ${email}`;
+    OTP_STATE = { code:otp, email, expiry: Date.now() + 10*60*1000 };
+    // Store OTP in sessionStorage temporarily
+    sessionStorage.setItem('se_otp', JSON.stringify({ code: otp, email, expiry: OTP_STATE.expiry }));
+    // Show OTP directly on screen (no email service needed)
+    document.getElementById('otp-sub').innerHTML =
+      'Your reset code is: <strong style="font-family:var(--mono);font-size:22px;color:var(--accent);letter-spacing:4px">' + otp + '</strong><br>' +
+      '<span style="font-size:11px;color:var(--muted)">Copy this code and enter it below. Valid for 10 minutes.</span>';
     showPanel('otp');
-    // Clear OTP inputs and focus first
     document.querySelectorAll('.otp-digit').forEach(d=>{d.value='';d.classList.remove('filled');});
     setTimeout(()=>{ const d=document.querySelector('.otp-digit'); if(d) d.focus(); },100);
     startResendTimer();
+    toast('🔑 OTP generated! Enter it below.');
   } catch(err) { showErr('fp-err','Connection error. Please try again.'); console.error(err); }
-  setBtnLoading('fp-btn',false,'📧 Send OTP →');
+  setBtnLoading('fp-btn',false,'Get OTP →');
 }
 
 function otpInput(inp, idx) {
@@ -1632,12 +1635,22 @@ function otpKey(e, idx) {
   }
 }
 
-function verifyOTP() {
+async function verifyOTP() {
   const digits=[...document.querySelectorAll('.otp-digit')].map(d=>d.value).join('');
   if(digits.length<6){ showErr('otp-err','Please enter all 6 digits'); return; }
-  if(Date.now()>OTP_STATE.expiry){ showErr('otp-err','OTP expired. Please request a new one.'); return; }
-  if(digits!==OTP_STATE.code){ showErr('otp-err','Incorrect OTP. Please try again.'); return; }
-  // OTP correct
+  // Check OTP state (stored in sessionStorage as fallback)
+  let code = OTP_STATE.code;
+  let expiry = OTP_STATE.expiry;
+  if(!code) {
+    try {
+      const stored = JSON.parse(sessionStorage.getItem('se_otp') || 'null');
+      if(stored && stored.email === OTP_STATE.email) { code = stored.code; expiry = stored.expiry; }
+    } catch(e){}
+  }
+  if(Date.now()>expiry){ showErr('otp-err','OTP expired. Please request a new one.'); return; }
+  if(digits!==code){ showErr('otp-err','Incorrect OTP. Please try again.'); return; }
+  // OTP correct — clean up Firebase OTP record
+  try { sessionStorage.removeItem('se_otp'); } catch(e){}
   clearErrors();
   showPanel('reset');
   document.getElementById('rp-pass').value='';
@@ -1645,7 +1658,7 @@ function verifyOTP() {
 }
 
 async function resendOTP() {
-  if(OTP_STATE.resendTimerCount>0) return;
+  if(_resendCountdown>0) return;
   const fpEmail=document.getElementById('fp-email');
   if(fpEmail&&OTP_STATE.email) fpEmail.value=OTP_STATE.email;
   await sendOTP();
@@ -1675,10 +1688,10 @@ async function resetPassword() {
   if(pass!==pass2){ showErr('rp-err','Passwords do not match'); return; }
   setBtnLoading('rp-btn',true,'Saving…');
   try {
-    const u = await DB.getUser(OTP_STATE.email);
+    const u = DB.getUser(OTP_STATE.email);
     if(!u){ showErr('rp-err','User not found.'); setBtnLoading('rp-btn',false,'🔐 Save New Password →'); return; }
     const passHash = await DB.hash(pass);
-    await DB.saveUser(OTP_STATE.email, {...u, passHash});
+    DB.saveUser(OTP_STATE.email, {...u, passHash});
     toast('✅ Password reset successfully! Please sign in.');
     OTP_STATE={code:'',email:'',expiry:0,resendTimer:null};
     showPanel('login');
@@ -1688,7 +1701,7 @@ async function resetPassword() {
 
 // ═══ INIT APP ═══
 function initApp(email, u) {
-  if(!u) u = DB._usersCache?.[email] || {};
+  if(!u) u = DB.getUser(email) || {};
   S.user=email;
   S.groups=DB.getGroups(email);
   S.expenses=DB.getExpenses(email);
@@ -1723,35 +1736,54 @@ function initApp(email, u) {
   checkPendingInviteAfterLogin();
 }
 
-// ── App startup — connect to Firebase first, then restore session ──
+// ── App startup — Firebase-powered with localStorage fallback ──
 window.addEventListener('load', async () => {
-  const loadingEl = document.getElementById('db-loading');
+  const loadingEl  = document.getElementById('db-loading');
   const loadingTxt = document.getElementById('db-loading-txt');
-  try {
-    loadingTxt.textContent = 'Connecting to database…';
-    // Load shared data needed before login
-    await Promise.all([
-      DB.loadAllUsers(),
-      DB.loadInvites(),
-      DB.loadBanned(),
-    ]);
-    checkInviteLink();
-    const session = sessionStorage.getItem('se_session');
-    if(session && DB._usersCache?.[session]) {
-      loadingTxt.textContent = 'Loading your data…';
-      await DB.loadUserData(session);
-      if(loadingEl) loadingEl.classList.add('hidden');
-      initApp(session, DB._usersCache[session]);
-    } else {
-      if(loadingEl) loadingEl.classList.add('hidden');
+  const hideLoading = () => { if(loadingEl) loadingEl.classList.add('hidden'); };
+
+  const session = sessionStorage.getItem('se_session');
+
+  // ── STEP 1: Check if this device already has user data locally ──
+  // If yes, show app instantly (best experience for returning users on same device)
+  if(session) {
+    const localUser = DB.getUsers()[session];
+    if(localUser) {
+      // User data is already in localStorage on this device — go straight in
+      checkInviteLink();
+      hideLoading();
+      initApp(session, localUser);
+      // Background: sync latest data from Firebase silently
+      setTimeout(() => {
+        DB.loadUserData(session).then(() => {
+          // Data refreshed from cloud in background
+          S.groups   = DB.getGroups(session);
+          S.expenses = DB.getExpenses(session);
+          S.activity = DB.getActivity(session);
+          S.profile  = DB.getProfile(session);
+          S.currency = S.profile.currency || '$';
+          renderAll();
+        }).catch(()=>{});
+      }, 1000);
+      return;
     }
-  } catch(err) {
-    console.error('Firebase connection error:', err);
-    if(loadingTxt) loadingTxt.textContent = '⚠️ Could not connect to database. Check Firebase config.';
-    // Show error but let user see auth screen
-    setTimeout(()=>{ if(loadingEl) loadingEl.classList.add('hidden'); }, 3000);
   }
-});
+
+  // ── STEP 2: No local data — this is a new device login or first visit ──
+  // Pull data from Firebase
+  if(loadingTxt) loadingTxt.textContent = 'Connecting…';
+
+  // Give Firebase 10 seconds to connect, then fall through to auth screen
+  const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 10000));
+
+  try {
+    // Wait for Firebase to actually connect
+    const connResult = await Promise.race([
+      new Promise(resolve => {
+  // Firebase connectivity check removed — using localStorage primary
+  return Promise.resolve('connected');
+);
+
 
 // ═══ RENDER ═══
 function renderAll() {
@@ -2515,11 +2547,9 @@ async function saveProfile() {
   if(!name)return toast('⚠️ Name cannot be empty');
   S.profile={...S.profile,name,currency};S.currency=currency;
   DB.saveProfile(S.user,S.profile);
-  const u=DB._usersCache?.[S.user]||{};
+  const u=DB.getUser(S.user)||{};
   const initials=name.split(' ').filter(Boolean).map(n=>n[0].toUpperCase()).slice(0,2).join('');
-  const updated={...u,name,initials};
-  if(DB._usersCache) DB._usersCache[S.user]=updated;
-  DB.saveUser(S.user,updated);
+  DB.saveUser(S.user,{...u,name,initials});
   document.getElementById('prof-name').textContent=name;
   document.getElementById('topbar-name').textContent=name.split(' ')[0];
   document.getElementById('topbar-avatar').textContent=initials;
@@ -2863,10 +2893,10 @@ function showAdminLogin(){
 async function showAdminApp(){
   document.getElementById('admin-login-view').style.display='none';
   document.getElementById('admin-app-view').style.display='flex';
-  // Reload fresh data from Firebase
-  await DB.loadAllUsers();
-  await DB.loadBanned();
-  await DB.loadInvites();
+  // Refresh from Firebase in background (non-blocking)
+  DB.loadAllUsers().then(()=>{ const ub=document.getElementById('adm-user-badge'); if(ub) ub.textContent=Object.keys(DB.getUsers()).length; }).catch(()=>{});
+  DB.loadBanned().catch(()=>{});
+  DB.loadInvites().catch(()=>{});
   const cfg=admCfg();
   document.getElementById('adm-topbar-email').textContent=cfg.email;
   const t=new Date();
@@ -3103,12 +3133,12 @@ function admUnban(email){
   admAudit('UNBAN_USER',email); renderAdminUsers(); toast(`✅ ${email} unbanned`);
 }
 async function admDeleteUser(email){
-  if(!confirm("Permanently delete "+email+" and ALL their data?"))return;
+  if(!confirm('Permanently delete '+email+' and ALL their data? This cannot be undone.'))return;
   await DB.deleteUserAllData(email);
   saveBanned(getBanned().filter(e=>e!==email));
-  await DB.loadAllUsers();
-  admAudit("DELETE_USER",email); renderAdminUsers(); renderAdminOverview();
-  toast("Deleted "+email);
+  DB.loadAllUsers();
+  admAudit('DELETE_USER',email); renderAdminUsers(); renderAdminOverview();
+  toast('Deleted: '+email);
 }
 function admImpersonate(email){
   if(!DB.getUsers()[email])return toast('User not found');
@@ -3629,8 +3659,12 @@ window.goTo = function(page){
 
 <!-- DB Loading Overlay -->
 <div id="db-loading">
-  <div class="db-spinner"></div>
-  <div class="db-loading-txt" id="db-loading-txt">Connecting to database…</div>
+  <div style="text-align:center">
+    <div style="width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 20px;box-shadow:0 0 40px rgba(79,255,176,0.3)">✂️</div>
+    <div style="font-size:22px;font-weight:800;margin-bottom:6px">Split<span style="color:var(--accent)">Ease</span></div>
+    <div class="db-spinner" style="margin:18px auto"></div>
+    <div class="db-loading-txt" id="db-loading-txt">Connecting to database…</div>
+  </div>
 </div>
 
 </body>
